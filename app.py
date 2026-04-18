@@ -4,6 +4,8 @@ from db_config import locations_collection
 
 app = Flask(__name__)
 
+app.json.sort_keys = False #Prevents the flask to ordet formats by the a-z order
+
 app.register_blueprint(locations_bp, url_prefix="/locations") #Here it says that everthing in the bluprint that calld "locations_bp" must start with "locations"
 
 @app.route("/")

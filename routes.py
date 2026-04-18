@@ -1,8 +1,9 @@
+import json
 from flask import Blueprint, request, jsonify
 from db_config import locations_collection
 from bson import json_util
-import json
 from models import validate_location_data
+from bson.objectid import ObjectId
 
 locations_bp = Blueprint("locations", __name__)
 
@@ -35,17 +36,44 @@ def add_location():
 #!===========================================
 @locations_bp.route("/all", methods=["GET"])
 def get_all_locations():
+    
     city_filter = request.args.get("city")
     
     query = {}
     
     if city_filter:
         query["city"] = {"$regex": city_filter, "$options": "i"}
-    
+        
     all_locations_cursor = locations_collection.find(query)
-    
     all_locations_list = list(all_locations_cursor)
     
-    response_data = json.loads(json_util.dumps(all_locations_list))
-    
-    return jsonify(response_data), 200
+    #New list that order our data like we want
+    final_ordered_list = []
+    for loc in all_locations_list:
+        ordered_loc = {
+            "city": loc.get("city"),
+            "name": loc.get("name"),
+            "description": loc.get("description"),
+            "category": loc.get("category"),
+            "rating": loc.get("rating"),
+            "visited": loc.get("visited"),
+            "_id": str(loc.get("_id")) #Id will be last
+        }
+        final_ordered_list.append(ordered_loc)
+
+    return jsonify(final_ordered_list), 200
+
+#!===========================================
+@locations_bp.route("/delete/<location_id>", methods=["DELETE"])
+def delete_location(location_id):
+    try:
+        #Delete the data we want by ID
+        result = locations_collection.delete_one({"_id": ObjectId(location_id)})
+        
+        if result.deleted_count == 1:
+            return jsonify({"msg": "Location deleted successfully"}), 200
+        else:
+            return jsonify({"error": "Location not found"}), 404
+            
+    except Exception as e: #If the id is not with the acceptble format
+        return jsonify({"error": "Invalid ID format"}), 400
