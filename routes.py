@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 from db_config import locations_collection
 from bson import json_util
 from models import validate_location_data, validate_partial_data
@@ -19,7 +19,7 @@ def add_location():
     cleaned_data, validation_errors = validate_location_data(raw_data)
     
     if validation_errors: #If its error so:
-        return jsonify({"status": "[ERROR]", "errors": validation_errors}), 400 #Returning error with explain why
+        abort(400, description=validation_errors)
     
     #The format we want to be saved in mongo, and making sure that all of the fileds exist in the right order
     formatted_data = {
@@ -39,17 +39,13 @@ def add_location():
     
     if existing_location:
         #409 Says that somthing already exist
-        return jsonify({"[ERROR]": "This location already exists in your trip list!"}), 409
+        abort(409, description="This location already exists in your trip list")
+    
+    result = locations_collection.insert_one(formatted_data)
     
     #The inject to mongo
     result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
-    
-    return jsonify({
-        "msg": "Location added successfully",
-        "id": str(result.inserted_id) #Return to the client the ID that has created
-    }), 201 #Created new source status
-    
-    
+    return jsonify({"msg": "Location added successfully", "id": str(result.inserted_id)}), 201
 #!===========================================
 @locations_bp.route("/all", methods=["GET"])
 def get_all_locations():

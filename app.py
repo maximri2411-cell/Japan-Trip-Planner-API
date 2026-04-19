@@ -1,9 +1,13 @@
 from flask import Flask, render_template
 from routes import locations_bp
 from db_config import locations_collection 
+from error_handlers import register_error_handlers
 
 #Creating the brain of the app, show of the flask that control all of the communication
 app = Flask(__name__)
+
+#Connect the error handler
+register_error_handlers(app)
 
 #Prevents the flask to order the formats by the a-z order in JSON so we get the format we want
 app.json.sort_keys = False 
