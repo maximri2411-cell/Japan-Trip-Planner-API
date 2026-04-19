@@ -130,3 +130,30 @@ body {
 .map-btn:hover {
     background: #3367d6;
 }
+
+/* Add Location Form Styles */
+.add-location-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 50px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+.form-group {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+#submit-btn:hover {
+    background-color: #218838 !important;
+}

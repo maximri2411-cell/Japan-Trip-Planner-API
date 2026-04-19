@@ -21,7 +21,22 @@
 
     <main class="container">
         <section id="stats-summary">
-            </section>
+        <section class="add-location-section">
+            <h2 style="margin-bottom: 20px;">Add a New Destination 📍</h2>
+            <form id="add-location-form" class="location-form">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Location Name (e.g. Shibuya)" required>
+                    <input type="text" id="city" placeholder="City" required>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <input type="text" id="category" placeholder="Category (Food, Shrine...)">
+                    <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5">
+                </div>
+                <textarea id="description" placeholder="Description" rows="3" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+                <input type="url" id="map_url" placeholder="Google Maps Link" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                <button type="submit" id="submit-btn" style="margin-top: 20px; width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Save Location</button>
+            </form>
+        </section>
 
         <section id="locations-grid">
             <h2>My Destinations</h2>
@@ -34,3 +49,4 @@
     <script src="/script.js"></script>
 </body>
 </html>
+
