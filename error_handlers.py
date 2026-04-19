@@ -2,7 +2,7 @@ from flask import jsonify
 
 def register_error_handlers(app):
     
-    # שגיאה 400 - Bad Request (נתונים לא תקינים)
+    # 400 - Bad Request 
     @app.errorhandler(400)
     def bad_request_error(error):
         return jsonify({
@@ -11,7 +11,7 @@ def register_error_handlers(app):
             "code": 400
         }), 400
 
-    # שגיאה 404 - Not Found (מקום לא קיים)
+    #404 - Not Found
     @app.errorhandler(404)
     def not_found_error(error):
         return jsonify({
@@ -20,7 +20,7 @@ def register_error_handlers(app):
             "code": 404
         }), 404
 
-    # שגיאה 409 - Conflict (כפילות נתונים)
+    #409 - Conflict
     @app.errorhandler(409)
     def conflict_error(error):
         return jsonify({
@@ -29,7 +29,7 @@ def register_error_handlers(app):
             "code": 409
         }), 409
 
-    # שגיאה 500 - שרת (תמיד כדאי שיהיה לכל מקרה)
+    # 500 - server
     @app.errorhandler(Exception)
     def handle_unexpected_error(error):
         return jsonify({

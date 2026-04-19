@@ -98,7 +98,6 @@ def get_location_by_id(location_id):
     
     try: #Trying to find by ID
         location = locations_collection.find_one({"_id": ObjectId(location_id)})
-        
         if location: #Order what we get from data base in our format
             return jsonify({
                 "city": location.get("city"),
@@ -110,10 +109,10 @@ def get_location_by_id(location_id):
                 "_id": str(location.get("_id"))
             }), 200
         else:
-            return jsonify({"[ERROR]": "Location not found"}), 404
+            abort(404)
             
-    except Exception as e:
-        return jsonify({"[ERROR]": "Invalid ID format"}), 400
+    except Exception:
+        abort(400, description="Invalid ID format")
 
 
 #!===========================================
@@ -127,11 +126,11 @@ def delete_location(location_id):
         if result.deleted_count == 1:
             return jsonify({"msg": "Location deleted successfully"}), 200
         else:
-            return jsonify({"[ERROR]": "Location not found"}), 404
+            abort(404)
             
     #If the id is not with the acceptble format
-    except Exception as e: 
-        return jsonify({"[ERROR]": "Invalid ID format"}), 400
+    except Exception:
+        abort(400, description="Invalid ID format")
     
     
 #!===========================================
@@ -145,7 +144,7 @@ def update_location(location_id):
     
     #Here we stop in case the rating is above 5
     if validation_errors:
-        return jsonify({"[ERROR]": validation_errors}), 400
+        abort(400, description=validation_errors)
 
     try: #Command $set update only the requested fileds and save the other info without change
         result = locations_collection.update_one(
@@ -155,15 +154,15 @@ def update_location(location_id):
 
         #Checks if the place us even exist
         if result.matched_count == 0:
-            return jsonify({"[ERROR]": "Location not found"}), 404
+            abort(404)
         
         return jsonify({ #The messages of success
             "msg": "Location updated successfully",
             "modified_fields": result.modified_count #Return only what has been changed
         }), 200
 
-    except Exception as e: #The message od error
-        return jsonify({"[ERROR]]": "Invalid ID format or update failed"}), 400
+    except Exception: #The message od error
+        abort(400, description="Invalid ID format or update failed")
     
     
 #!===========================================
@@ -177,7 +176,7 @@ def replace_location(location_id):
     cleaned_data, validation_errors = validate_location_data(raw_data)
     
     if validation_errors:
-        return jsonify({"[ERROR]": validation_errors}), 400
+        abort(400, description=validation_errors)
 
     try:
         #replace_one deletes the old o=info and puts the new object insted onder the same id
@@ -187,15 +186,15 @@ def replace_location(location_id):
         )
 
         if result.matched_count == 0:
-            return jsonify({"[ERROR]": "Location not found"}), 404
+            abort(404)
         
         return jsonify({
             "msg": "Location replaced successfully",
             "modified_count": result.modified_count
         }), 200
 
-    except Exception as e:
-        return jsonify({"[ERROR]": "Invalid ID format or replace failed"}), 400
+    except Exception:
+        abort(400, description="Invalid ID format or replace failed")
     
     
 #!===========================================

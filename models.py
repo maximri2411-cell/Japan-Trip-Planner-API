@@ -1,5 +1,3 @@
-
-
 def validate_location_data(data):
     errors = []
 
@@ -24,9 +22,9 @@ def validate_location_data(data):
             data[field] = value
 
     #This one in case the customer not putting all of the required deatails, if it misses it will bring error
-    if not data.get("name"):
+    if not data.get("name") or data.get("name") == "":
         errors.append("Missing field: name is required")
-    if not data.get("city"):
+    if not data.get("city")or data.get("city") == "":
         errors.append("Missing field: city is required")
 
     #Creating a loop to make sure the customer puts an int from 1 to 5 only
