@@ -5,49 +5,68 @@ from bson import json_util
 from models import validate_location_data, validate_partial_data
 from bson.objectid import ObjectId
 
+#Creating an extension with the name 'locations'
+#Allows us to organize the paths in a separate file from the main app
 locations_bp = Blueprint("locations", __name__)
 
 
 #!===========================================
 @locations_bp.route("/add", methods=["POST"])
 def add_location():
-    raw_data = request.json
+    raw_data = request.json #Takes the data that send from body in postman
     
-    cleaned_data, validation_errors = validate_location_data(raw_data) #Sending the data to models in order to check
+    #Validation send the data for test in models and gets back clean data or errors
+    cleaned_data, validation_errors = validate_location_data(raw_data)
     
     if validation_errors: #If its error so:
         return jsonify({"status": "[ERROR]", "errors": validation_errors}), 400 #Returning error with explain why
     
+    #The format we want to be saved in mongo, and making sure that all of the fileds exist in the right order
     formatted_data = {
         "city": cleaned_data.get("city"),
         "name": cleaned_data.get("name"),
         "description": cleaned_data.get("description"),
         "category": cleaned_data.get("category"),
         "rating": cleaned_data.get("rating"),
-        "visited": cleaned_data.get("visited", False)
+        "visited": cleaned_data.get("visited", False) #In case it will be empty, it will print "False"
     }
-    
+    #The inject to mongo
     result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
     
     return jsonify({
         "msg": "Location added successfully",
-        "id": str(result.inserted_id)
-    }), 201
+        "id": str(result.inserted_id) #Return to the client the ID that has created
+    }), 201 #Created new source status
     
     
 #!===========================================
 @locations_bp.route("/all", methods=["GET"])
 def get_all_locations():
     
+    #Takes parametrim from URL (query params) like ?city=tokyo
     city_filter = request.args.get("city")
+    category_filter = request.args.get("category")
+    rating_filter = request.args.get("rating")
     
+    #The query object to be sent to Mongo
     query = {}
     
     if city_filter:
+        #Using the regex (not case sensetive) for flexible search
         query["city"] = {"$regex": city_filter, "$options": "i"}
+    
+    if category_filter:
+        query["category"] = {"$regex": category_filter, "$options": "i"}
         
+    if rating_filter:
+        try:
+            query["rating"] = int(rating_filter) #Conversion number 
+        except ValueError:
+            pass
+        
+    #Performing the search in mpngo and returns cursor (points on data)
     all_locations_cursor = locations_collection.find(query)
-    all_locations_list = list(all_locations_cursor)
+    all_locations_list = list(all_locations_cursor) #Making the result to list of python
     
     #New list that order our data like we want
     final_ordered_list = []
@@ -59,7 +78,7 @@ def get_all_locations():
             "category": loc.get("category"),
             "rating": loc.get("rating"),
             "visited": loc.get("visited"),
-            "_id": str(loc.get("_id")) #Id will be last
+            "_id": str(loc.get("_id")) #conversion from objectid to string
         }
         final_ordered_list.append(ordered_loc)
 
@@ -67,18 +86,44 @@ def get_all_locations():
 
 
 #!===========================================
+@locations_bp.route("/<location_id>", methods=["GET"])
+def get_location_by_id(location_id):
+    
+    try: #Trying to find by ID
+        location = locations_collection.find_one({"_id": ObjectId(location_id)})
+        
+        if location: #Order what we get from data base in our format
+            return jsonify({
+                "city": location.get("city"),
+                "name": location.get("name"),
+                "description": location.get("description"),
+                "category": location.get("category"),
+                "rating": location.get("rating"),
+                "visited": location.get("visited"),
+                "_id": str(location.get("_id"))
+            }), 200
+        else:
+            return jsonify({"[ERROR]": "Location not found"}), 404
+            
+    except Exception as e:
+        return jsonify({"[ERROR]": "Invalid ID format"}), 400
+
+
+#!===========================================
 @locations_bp.route("/delete/<location_id>", methods=["DELETE"])
 def delete_location(location_id):
     try:
-        #Delete the data we want by ID
+        #Trying to delete by id, we need to cover the id with objectid() of mongo
         result = locations_collection.delete_one({"_id": ObjectId(location_id)})
         
+        #Check if mongo relly found and deleted other 
         if result.deleted_count == 1:
             return jsonify({"msg": "Location deleted successfully"}), 200
         else:
             return jsonify({"[ERROR]": "Location not found"}), 404
             
-    except Exception as e: #If the id is not with the acceptble format
+    #If the id is not with the acceptble format
+    except Exception as e: 
         return jsonify({"[ERROR]": "Invalid ID format"}), 400
     
     
@@ -88,18 +133,17 @@ def update_location(location_id):
     
     raw_updates = request.json
     
-    #Calling fot the function we created in models
-    #Its already doing strip and cleans data
+    #Checkin only the fileds that has been send to update
     cleaned_updates, validation_errors = validate_partial_data(raw_updates)
     
     #Here we stop in case the rating is above 5
     if validation_errors:
         return jsonify({"[ERROR]": validation_errors}), 400
 
-    try:
+    try: #Command $set update only the requested fileds and save the other info without change
         result = locations_collection.update_one(
             {"_id": ObjectId(location_id)},
-            {"$set": cleaned_updates} #Using clean data
+            {"$set": cleaned_updates} 
         )
 
         #Checks if the place us even exist
@@ -108,7 +152,7 @@ def update_location(location_id):
         
         return jsonify({ #The messages of success
             "msg": "Location updated successfully",
-            "modified_fields": result.modified_count
+            "modified_fields": result.modified_count #Return only what has been changed
         }), 200
 
     except Exception as e: #The message od error
@@ -129,7 +173,7 @@ def replace_location(location_id):
         return jsonify({"[ERROR]": validation_errors}), 400
 
     try:
-        #This time we dont use $set, we send all of cleaned_data for replace
+        #replace_one deletes the old o=info and puts the new object insted onder the same id
         result = locations_collection.replace_one(
             {"_id": ObjectId(location_id)},
             cleaned_data

@@ -1,7 +1,6 @@
 
 
 def validate_location_data(data):
-
     errors = []
 
     #This is for cleaning spaces in case there are from the input of the customer
@@ -9,6 +8,10 @@ def validate_location_data(data):
     for field in text_fields:
         if field in data and isinstance(data[field], str):
             data[field] = data[field].strip()
+            
+            #Checks if the customer puts "1234"
+            if field in ["city", "name", "category"] and data[field].isdigit():
+                errors.append(f"Field '{field}' cannot be just numbers")
 
     #This one in case the customer not putting all of the required deatails, if it misses it will bring error
     if not data.get("name"):

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from routes import locations_bp
 from db_config import locations_collection 
 
@@ -14,7 +14,7 @@ app.register_blueprint(locations_bp, url_prefix="/locations")
 #Defines a basic path (home page) so that we know the server is live when we enter the main address
 @app.route("/")
 def home():
-    return {"message": "Welcome to My Japan Trip API"} 
+        return render_template("index_html")
 
 #Checks whether we ran the file directly (and not imported it) and if so - runs the server in test mode - debug
 if __name__ == "__main__":
