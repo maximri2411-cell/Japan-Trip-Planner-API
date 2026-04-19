@@ -1,10 +1,12 @@
 from flask import Flask, render_template
+from flask_cors import CORS
 from routes import locations_bp
 from db_config import locations_collection 
 from error_handlers import register_error_handlers
 
 #Creating the brain of the app, show of the flask that control all of the communication
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="templates", static_url_path="")
+CORS(app)
 
 #Connect the error handler
 register_error_handlers(app)
@@ -18,7 +20,7 @@ app.register_blueprint(locations_bp, url_prefix="/locations")
 #Defines a basic path (home page) so that we know the server is live when we enter the main address
 @app.route("/")
 def home():
-        return render_template("index_html")
+        return render_template("index.html")
 
 #Checks whether we ran the file directly (and not imported it) and if so - runs the server in test mode - debug
 if __name__ == "__main__":
