@@ -157,3 +157,19 @@ body {
 #submit-btn:hover {
     background-color: #218838 !important;
 }
+
+#add-new-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    font-size: 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#add-new-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);

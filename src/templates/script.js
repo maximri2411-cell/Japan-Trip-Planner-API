@@ -69,5 +69,9 @@ document.getElementById('add-location-form').addEventListener('submit', async (e
     }
 });
 
+document.getElementById('add-new-btn').addEventListener('click', () => {
+    document.querySelector('.add-location-section').scrollIntoView({ behavior: 'smooth' });
+});
+
 window.onload = fetchLocations;
 

@@ -14,13 +14,17 @@
             <div class="hero-content">
                 <h1>Japan Trip 2026</h1>
                 <p>Exploring the Land of the Rising Sun</p>
-                <button id="explore-btn">Start Exploring</button>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                    <button id="explore-btn">Start Exploring</button>
+                    <button id="add-new-btn">Add New Place</button>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="container">
-        <section id="stats-summary">
+        <section id="stats-summary"></section>
+
         <section class="add-location-section">
             <h2 style="margin-bottom: 20px;">Add a New Destination 📍</h2>
             <form id="add-location-form" class="location-form">
@@ -34,12 +38,12 @@
                 </div>
                 <textarea id="description" placeholder="Description" rows="3" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
                 <input type="url" id="map_url" placeholder="Google Maps Link" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-                <button type="submit" id="submit-btn" style="margin-top: 20px; width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Save Location</button>
+                <button type="submit" id="submit-btn">Save Location</button>
             </form>
         </section>
 
         <section id="locations-grid">
-            <h2>My Destinations</h2>
+            <h2 style="margin-bottom: 25px;">My Destinations</h2>
             <div id="locations-container" class="grid">
                 <p class="loading">Loading your journey...</p>
             </div>
@@ -49,4 +53,3 @@
     <script src="/script.js"></script>
 </body>
 </html>
-
