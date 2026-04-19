@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, request, jsonify
 from db_config import locations_collection
 from bson import json_util
-from models import validate_location_data
+from models import validate_location_data, validate_partial_data
 from bson.objectid import ObjectId
 
 locations_bp = Blueprint("locations", __name__)
@@ -83,20 +83,23 @@ def delete_location(location_id):
     
     
 #!===========================================
-@locations_bp.route('/update/<location_id>', methods=['PATCH'])
+@locations_bp.route("/update/<location_id>", methods=["PATCH"])
 def update_location(location_id):
     
-    updates = request.json
+    raw_updates = request.json
     
-    #Cleaning spaces in case there is in the input
-    for key, value in updates.items():
-        if isinstance(value, str):
-            updates[key] = value.strip()
+    #Calling fot the function we created in models
+    #Its already doing strip and cleans data
+    cleaned_updates, validation_errors = validate_partial_data(raw_updates)
+    
+    #Here we stop in case the rating is above 5
+    if validation_errors:
+        return jsonify({"[ERROR]": validation_errors}), 400
 
     try:
         result = locations_collection.update_one(
             {"_id": ObjectId(location_id)},
-            {"$set": updates}
+            {"$set": cleaned_updates} #Using clean data
         )
 
         #Checks if the place us even exist
@@ -104,10 +107,41 @@ def update_location(location_id):
             return jsonify({"[ERROR]": "Location not found"}), 404
         
         return jsonify({ #The messages of success
-
             "msg": "Location updated successfully",
             "modified_fields": result.modified_count
         }), 200
 
     except Exception as e: #The message od error
         return jsonify({"[ERROR]]": "Invalid ID format or update failed"}), 400
+    
+    
+#!===========================================
+@locations_bp.route("/replace/<location_id>", methods=["PUT"])
+def replace_location(location_id):
+    
+    #Getting the new data that replace the old one
+    raw_data = request.json
+    
+    #Secured valitation like in post
+    cleaned_data, validation_errors = validate_location_data(raw_data)
+    
+    if validation_errors:
+        return jsonify({"[ERROR]": validation_errors}), 400
+
+    try:
+        #This time we dont use $set, we send all of cleaned_data for replace
+        result = locations_collection.replace_one(
+            {"_id": ObjectId(location_id)},
+            cleaned_data
+        )
+
+        if result.matched_count == 0:
+            return jsonify({"[ERROR]": "Location not found"}), 404
+        
+        return jsonify({
+            "msg": "Location replaced successfully",
+            "modified_count": result.modified_count
+        }), 200
+
+    except Exception as e:
+        return jsonify({"[ERROR]": "Invalid ID format or replace failed"}), 400

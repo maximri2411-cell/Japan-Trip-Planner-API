@@ -28,7 +28,37 @@ def validate_location_data(data):
         except (ValueError, TypeError):
             errors.append("Rating must be a valid number") #Our error message
             
-    if not data.get('category'): #In case the customer havent put an category, it will auto as General
-        data['category'] = "General"
+    if not data.get("category"): #In case the customer havent put an category, it will auto as General
+        data["category"] = "General"
 
     return data, errors #Returns the new data and errors
+
+
+#!===========================================
+def validate_partial_data(data): #This is made for patch
+    
+    errors = []
+    
+    #Checking the rating only if it's please
+    if "rating" in data:
+        rating = data["rating"]
+        try:
+            rating = int(rating)
+            if not (1 <= rating <= 5):
+                errors.append("Rating must be between 1 and 5")
+            data["rating"] = rating
+        except (ValueError, TypeError):
+            errors.append("Rating must be a valid number")
+
+    #Checking the fileds so they wont be empty
+    text_fields = ["name", "city", "category"]
+    for field in text_fields:
+        if field in data:
+            if isinstance(data[field], str):
+                data[field] = data[field].strip()
+                if not data[field]: 
+                    errors.append(f"Field '{field}' cannot be empty")
+            else:
+                errors.append(f"Field '{field}' must be a string")
+
+    return data, errors
