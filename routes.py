@@ -30,6 +30,17 @@ def add_location():
         "rating": cleaned_data.get("rating"),
         "visited": cleaned_data.get("visited", False) #In case it will be empty, it will print "False"
     }
+    
+    #Check if the city alredy exist
+    existing_location = locations_collection.find_one({
+        "name": formatted_data["name"],
+        "city": formatted_data["city"]
+    })
+    
+    if existing_location:
+        #409 Says that somthing already exist
+        return jsonify({"[ERROR]": "This location already exists in your trip list!"}), 409
+    
     #The inject to mongo
     result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
     
@@ -189,3 +200,33 @@ def replace_location(location_id):
 
     except Exception as e:
         return jsonify({"[ERROR]": "Invalid ID format or replace failed"}), 400
+    
+    
+#!===========================================
+@locations_bp.route("/grouped", methods=["GET"])
+def get_grouped_locations():
+    all_locations = list(locations_collection.find()) #Gets all locations from data base
+    
+    grouped_data = {} #Empty dict
+    
+    for loc in all_locations: #Run over all locations and puting onder the city name
+        city_name = loc.get("city", "Unknown")
+        
+        #If the city does not exist, we create an empty list
+        if city_name not in grouped_data:
+            grouped_data[city_name] = []
+        
+        #Creation of the object place like in GET   
+        location_info = {
+            "name": loc.get("name"),
+            "description": loc.get("description"),
+            "category": loc.get("category"),
+            "rating": loc.get("rating"),
+            "visited": loc.get("visited"),
+            "_id": str(loc.get("_id"))
+        }
+        
+        #Adding the place to the citu list
+        grouped_data[city_name].append(location_info)
+        
+    return jsonify(grouped_data), 200

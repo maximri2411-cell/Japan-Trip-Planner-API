@@ -7,11 +7,21 @@ def validate_location_data(data):
     text_fields = ["city", "name", "category", "description"]
     for field in text_fields:
         if field in data and isinstance(data[field], str):
-            data[field] = data[field].strip()
+            value = data[field].strip() # #Cleaning spacec
             
             #Checks if the customer puts "1234"
-            if field in ["city", "name", "category"] and data[field].isdigit():
+            if field in ["city", "name", "category"] and value.isdigit():
                 errors.append(f"Field '{field}' cannot be just numbers")
+                
+            if value: #Normlize only if its not empty
+                if field in ["city", "name", "category"]:
+                    #Makes every word capitalized (like: shibuya crossing -> Shibuya Crossing)
+                    value = value.title()
+                elif field == "description":
+                    #The other will be small
+                    value = value.capitalize()
+            
+            data[field] = value
 
     #This one in case the customer not putting all of the required deatails, if it misses it will bring error
     if not data.get("name"):
@@ -26,7 +36,6 @@ def validate_location_data(data):
             rating = int(rating) #Trying to make the 
             if not (1 <= rating <= 5): #Checking the number is from 1 to 5
                 errors.append("Rating must be between 1 and 5")
-                
             data["rating"] = rating #Making sure that the input will go as int and not str
         except (ValueError, TypeError):
             errors.append("Rating must be a valid number") #Our error message
