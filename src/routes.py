@@ -41,8 +41,6 @@ def add_location():
         #409 Says that somthing already exist
         abort(409, description="This location already exists in your trip list")
     
-    result = locations_collection.insert_one(formatted_data)
-    
     #The inject to mongo
     result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
     return jsonify({"msg": "Location added successfully", "id": str(result.inserted_id)}), 201
@@ -85,6 +83,7 @@ def get_all_locations():
             "category": loc.get("category"),
             "rating": loc.get("rating"),
             "visited": loc.get("visited"),
+            "map_url": loc.get("map_url"), #This is to let the customer put the exact location if he has
             "_id": str(loc.get("_id")) #conversion from objectid to string
         }
         final_ordered_list.append(ordered_loc)
