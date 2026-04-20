@@ -13,7 +13,6 @@
     <div class="hero-overlay">
         <div class="hero-content">
             <h1 class="main-title">JAPAN TRIP 2026</h1>
-            <div id="weather-widget" class="weather-top">Loading weather...</div>
             
             <div class="intro-box">
                 <p>ברוכים הבאים ליומן המסע שלי ביפן. האתר הזה נבנה כדי לתעד את המקומות המדהימים שביקרתי בהם, לרכז טיפים חשובים ולתכנן את היעד הבא בארץ השמש העולה.</p>
@@ -22,6 +21,7 @@
             <div class="hero-btn-container">
                 <button id="explore-btn" class="hero-btn">Start Exploring</button>
                 <button id="tips-btn" class="hero-btn">Tools & Tips</button>
+                <a href="https://www.accuweather.com/en/jp/japan-weather" target="_blank" class="hero-btn weather-link">Weather</a>
             </div>
         </div>
     </div>
@@ -53,8 +53,8 @@
     <section class="filter-section">
         <h2 class="section-title">Filter by City 🏙️</h2>
         <div id="city-filters" class="filter-container">
-            <button class="filter-btn active" data-city="all">All Places</button>
-        </div>
+            </div>
+        
         <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
     </section>
 
@@ -81,15 +81,12 @@
     <div id="details-modal" class="modal">
         <div class="modal-content details-view">
             <span class="close-details">&times;</span>
-            <div id="details-body">
-                </div>
+            <div id="details-body"></div>
         </div>
     </div>
 
     <section id="locations-grid">
-        <div id="locations-container" class="grid">
-            <p class="loading">Loading your journey...</p>
-        </div>
+        <div id="locations-container" class="grid"></div>
     </section>
 </main>
 

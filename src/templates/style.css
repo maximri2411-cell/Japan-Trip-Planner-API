@@ -2,59 +2,55 @@
     --japan-red: #bc002d;
     --dark-grey: #333;
     --light-bg: #f8f9fa;
-    --modal-bg: rgba(0, 0, 0, 0.8);
+    --modal-bg: rgba(0, 0, 0, 0.85);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: var(--dark-grey); line-height: 1.6; }
 
-/* Weather Widget */
-.weather-top {
-    background: rgba(255,255,255,0.2);
-    display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    backdrop-filter: blur(5px);
-}
-
-/* Hero Repairs */
-.hero { height: 85vh; background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; position: relative; }
+/* Hero */
+.hero { height: 85vh; background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; }
 .hero-overlay { background: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .hero-content { text-align: center; color: white; padding: 20px; }
 .main-title { font-size: 4rem; color: white !important; letter-spacing: 5px; margin-bottom: 15px; text-shadow: 2px 2px 15px rgba(0,0,0,0.6); }
 
 .intro-box { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; max-width: 700px; margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.2); direction: rtl; }
 
-.hero-btn-container { display: flex; gap: 15px; justify-content: center; }
-.hero-btn { padding: 12px 35px; background: transparent; border: 2px solid white; color: white; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.hero-btn-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.hero-btn { padding: 12px 30px; background: transparent; border: 2px solid white; color: white; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
 .hero-btn:hover { background: var(--japan-red); border-color: var(--japan-red); }
 
-/* Container & Grid */
+/* Filter Buttons (חזרה לעיצוב המקורי) */
+.filter-section { text-align: center; margin-bottom: 50px; }
+.filter-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
+.filter-btn {
+    padding: 10px 25px;
+    border: 2px solid var(--japan-red);
+    background: white;
+    color: var(--japan-red);
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+.filter-btn.active, .filter-btn:hover { background: var(--japan-red); color: white; }
+
+/* Grid & Cards */
 .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 .tips-container { background: white; padding: 40px; border-radius: 20px; margin-top: -60px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 50px; }
-.section-title { text-align: center; color: var(--japan-red); margin-bottom: 30px; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-
-/* Location Cards */
-.location-card { background: white; padding: 0; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
-.location-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-.card-img-mini { width: 100%; height: 150px; object-fit: cover; background: #eee; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+.location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.location-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+.card-img-mini { width: 100%; height: 200px; object-fit: cover; background: #f0f0f0; }
 .card-text { padding: 20px; }
 
-/* Modals */
+/* Modal & Details */
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
-.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; }
 .close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
+.star-rating { color: #f4c542; font-size: 1.2rem; margin: 5px 0; }
 
-/* Details View */
-.details-view img { width: 100%; border-radius: 15px; margin-bottom: 20px; max-height: 300px; object-fit: cover; }
-.star-rating { color: #f4c542; font-size: 1.2rem; margin: 10px 0; }
-.share-btn { background: #eee; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 15px; font-weight: 600; }
-
-.nav-link-btn { display: block; width: 100%; text-align: center; padding: 12px; background: #4285F4; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 15px; }
-
-.add-main-btn { display: block; margin: 20px auto; padding: 15px 40px; background: var(--japan-red); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; }
+.add-main-btn { padding: 15px 40px; background: var(--japan-red); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.1rem; }
+.nav-link-btn { display: block; width: 100%; text-align: center; padding: 12px; background: #4285F4; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; }

@@ -1,15 +1,5 @@
 let allLocations = [];
 
-// Fetch Weather
-async function fetchWeather() {
-    try {
-        // בשימוש ב-API אמיתי תחליף את ה-URL. כאן השתמשתי בסימולציה לטוקיו
-        const weatherDiv = document.getElementById('weather-widget');
-        weatherDiv.innerHTML = `Tokyo: 18°C ☀️ | Clear Sky`;
-    } catch (e) { console.log("Weather error"); }
-}
-
-// Modals
 const addModal = document.getElementById("location-modal");
 const detailsModal = document.getElementById("details-modal");
 
@@ -22,7 +12,6 @@ window.onclick = (e) => {
     if (e.target == detailsModal) detailsModal.style.display = "none";
 }
 
-// Fetch Data from Backend
 async function fetchLocations() {
     try {
         const response = await fetch('http://127.0.0.1:5000/locations/all');
@@ -43,14 +32,16 @@ function displayLocations(locations) {
         card.className = 'location-card';
         card.onclick = () => showDetails(loc);
         
-        // שימוש בתמונה מה-DB או תמונה דיפולטיבית של יפן
-        const imgUrl = loc.image_url || 'https://images.unsplash.com/photo-1528164344705-4754268799af?q=80&w=500&auto=format';
+        // תיקון התמונות: אם ה-URL ריק, שמים תמונה יפה של יפן
+        const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
+            ? loc.image_url 
+            : 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format';
         
         card.innerHTML = `
-            <img src="${imgUrl}" class="card-img-mini">
+            <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://images.unsplash.com/photo-1528164344705-4754268799af?q=80&w=800&auto=format'">
             <div class="card-text">
                 <h3 style="color:#bc002d;">${loc.name}</h3>
-                <p style="font-size:0.8rem; color:#888;">📍 ${loc.city}</p>
+                <p style="font-size:0.9rem; color:#888;">📍 ${loc.city}</p>
                 <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
             </div>
         `;
@@ -60,31 +51,26 @@ function displayLocations(locations) {
 
 function showDetails(loc) {
     const body = document.getElementById('details-body');
-    const imgUrl = loc.image_url || 'https://images.unsplash.com/photo-1528164344705-4754268799af?q=80&w=800&auto=format';
+    const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
+            ? loc.image_url 
+            : 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format';
     
     body.innerHTML = `
-        <img src="${imgUrl}">
+        <img src="${imgUrl}" style="width:100%; border-radius:15px; margin-bottom:15px; max-height:300px; object-fit:cover;">
         <h2 style="color:#bc002d;">${loc.name}</h2>
         <p><strong>City:</strong> ${loc.city}</p>
         <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
         <p style="margin:15px 0;">${loc.description || 'Exploring the beauty of Japan...'}</p>
-        <div style="display:flex; gap:10px;">
-            <a href="${loc.map_url || '#'}" target="_blank" class="nav-link-btn" style="flex:2;">📍 View on Google Maps</a>
-            <button class="share-btn" onclick="shareLocation('${loc.name}')" style="flex:1;">🔗 Share</button>
-        </div>
+        <a href="${loc.map_url || '#'}" target="_blank" class="nav-link-btn">📍 View on Google Maps</a>
     `;
     detailsModal.style.display = "block";
-}
-
-function shareLocation(name) {
-    navigator.clipboard.writeText(`Check out this place in Japan: ${name}`);
-    alert("Location details copied to clipboard!");
 }
 
 function renderFilters() {
     const filterContainer = document.getElementById('city-filters');
     const cities = ['all', ...new Set(allLocations.map(l => l.city))];
     filterContainer.innerHTML = '';
+    
     cities.forEach(city => {
         const btn = document.createElement('button');
         btn.className = `filter-btn ${city === 'all' ? 'active' : ''}`;
@@ -98,13 +84,12 @@ function renderFilters() {
     });
 }
 
-// Form Submission
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
     const newLoc = {
         name: document.getElementById('name').value,
         city: document.getElementById('city').value,
-        rating: parseInt(document.getElementById('rating').value),
+        rating: parseInt(document.getElementById('rating').value) || 5,
         image_url: document.getElementById('image_url').value,
         description: document.getElementById('description').value,
         map_url: document.getElementById('map_url').value,
@@ -119,11 +104,9 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
     
     if (res.ok) {
         addModal.style.display = "none";
+        document.getElementById('add-location-form').reset();
         fetchLocations();
     }
 };
 
-window.onload = () => {
-    fetchLocations();
-    fetchWeather();
-};
+window.onload = fetchLocations;
