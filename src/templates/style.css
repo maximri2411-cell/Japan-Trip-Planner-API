@@ -16,7 +16,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 
 .intro-box { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; max-width: 700px; margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.2); direction: rtl; }
 
-/* כפתורי Hero - גודל אחיד */
+/* כפתורי Hero */
 .hero-btn-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
 .hero-btn, .weather-link { 
     width: 180px; 
@@ -33,11 +33,10 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     transition: 0.3s; 
     text-decoration: none; 
     font-size: 16px;
-    padding: 0;
 }
 .hero-btn:hover, .weather-link:hover { background: var(--japan-red); border-color: var(--japan-red); }
 
-/* Tips Section - העלאה ומרכוז כותרת */
+/* Tips Section */
 .tips-container { 
     background: white; 
     padding: 20px 40px 40px; 
@@ -48,14 +47,14 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     margin-bottom: 50px; 
     text-align: center; 
 }
-.section-title { color: var(--japan-red); margin-bottom: 30px; width: 100%; text-align: center; }
+.section-title { color: var(--japan-red); margin-bottom: 30px; }
 
-/* דאשבורד סינון חדש - עיצוב הבועה */
+/* דאשבורד סינון */
 .filters-dashboard {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 35px;
+    margin-bottom: 25px; /* צמצמתי קצת כדי שהכפתור יעלה */
     flex-wrap: wrap;
     background: white;
     padding: 20px;
@@ -76,12 +75,25 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     font-family: 'Poppins', sans-serif;
     outline: none;
     cursor: pointer;
-    transition: 0.3s;
     min-width: 160px;
 }
-.custom-select:focus { border-color: var(--japan-red); }
 
-/* Grid & Cards */
+/* כפתור הוספה - העליתי אותו */
+.add-main-btn { 
+    padding: 15px 40px; 
+    background: var(--japan-red); 
+    color: white; 
+    border: none; 
+    border-radius: 50px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    display: block; 
+    margin: -10px auto 40px; /* margin-top שלילי כדי להעלות אותו */
+    position: relative;
+    z-index: 10;
+}
+
+/* Cards & Grid */
 .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
 .location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
@@ -95,8 +107,5 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 .modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; }
 .close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
 
-.form-group { display: flex; gap: 10px; margin-bottom: 15px; }
-input, textarea, .form-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
-
-.add-main-btn { padding: 15px 40px; background: var(--japan-red); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; display: block; margin: 0 auto; }
+input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
 .nav-link-btn { display: block; width: 100%; text-align: center; padding: 12px; background: #4285F4; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; }
