@@ -3,9 +3,14 @@ let allLocations = [];
 const addModal = document.getElementById("location-modal");
 const detailsModal = document.getElementById("details-modal");
 
+// פתיחת/סגירת מודאלים
 document.getElementById("open-modal-btn").onclick = () => addModal.style.display = "block";
 document.querySelector(".close-modal").onclick = () => addModal.style.display = "none";
 document.querySelector(".close-details").onclick = () => detailsModal.style.display = "none";
+
+// כפתורי ה-Hero (גלילה חלקה)
+document.getElementById('explore-btn').onclick = () => document.getElementById('locations-grid').scrollIntoView({ behavior: 'smooth' });
+document.getElementById('tips-btn').onclick = () => document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
 
 window.onclick = (e) => {
     if (e.target == addModal) addModal.style.display = "none";
@@ -18,9 +23,7 @@ async function fetchLocations() {
         allLocations = await response.json();
         renderFilters();
         displayLocations(allLocations);
-    } catch (error) {
-        console.error("Connection error");
-    }
+    } catch (error) { console.error("Error fetching locations"); }
 }
 
 function displayLocations(locations) {
@@ -32,13 +35,13 @@ function displayLocations(locations) {
         card.className = 'location-card';
         card.onclick = () => showDetails(loc);
         
-        // תיקון התמונות: אם ה-URL ריק, שמים תמונה יפה של יפן
+        // תיקון: אם אין תמונה ב-DB, שמים ריבוע אפור עם טקסט במקום את תמונת ה-Hero
         const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
             ? loc.image_url 
-            : 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format';
+            : "https://via.placeholder.com/400x250?text=No+Image+Added";
         
         card.innerHTML = `
-            <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://images.unsplash.com/photo-1528164344705-4754268799af?q=80&w=800&auto=format'">
+            <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://via.placeholder.com/400x250?text=Image+Error'">
             <div class="card-text">
                 <h3 style="color:#bc002d;">${loc.name}</h3>
                 <p style="font-size:0.9rem; color:#888;">📍 ${loc.city}</p>
@@ -53,14 +56,14 @@ function showDetails(loc) {
     const body = document.getElementById('details-body');
     const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
             ? loc.image_url 
-            : 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format';
+            : "https://via.placeholder.com/400x250?text=No+Image+Added";
     
     body.innerHTML = `
         <img src="${imgUrl}" style="width:100%; border-radius:15px; margin-bottom:15px; max-height:300px; object-fit:cover;">
         <h2 style="color:#bc002d;">${loc.name}</h2>
         <p><strong>City:</strong> ${loc.city}</p>
         <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
-        <p style="margin:15px 0;">${loc.description || 'Exploring the beauty of Japan...'}</p>
+        <p style="margin:15px 0;">${loc.description || 'No description provided.'}</p>
         <a href="${loc.map_url || '#'}" target="_blank" class="nav-link-btn">📍 View on Google Maps</a>
     `;
     detailsModal.style.display = "block";
@@ -95,13 +98,11 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
         map_url: document.getElementById('map_url').value,
         visited: true
     };
-
     const res = await fetch('http://127.0.0.1:5000/locations/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLoc)
     });
-    
     if (res.ok) {
         addModal.style.display = "none";
         document.getElementById('add-location-form').reset();
