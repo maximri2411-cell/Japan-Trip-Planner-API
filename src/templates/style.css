@@ -47,9 +47,8 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     margin-bottom: 50px; 
     text-align: center; 
 }
-.section-title { color: var(--japan-red); margin-bottom: 30px; }
+.section-title { color: var(--japan-red); margin-bottom: 30px; width: 100%; text-align: center; display: block;}
 
-/* דאשבורד סינון */
 .filters-dashboard {
     display: flex;
     justify-content: center;
@@ -78,7 +77,6 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     min-width: 160px;
 }
 
-/* כפתור הוספה - העליתי אותו */
 .add-main-btn { 
     padding: 15px 40px; 
     background: var(--japan-red); 
@@ -102,9 +100,38 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 .card-text { padding: 20px; }
 .star-rating { color: #f4c542; font-size: 1.2rem; }
 
+
+#submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #bc002d, #ff4d4d); /* מעבר צבע יפני */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(188, 0, 45, 0.3);
+    margin-top: 20px;
+    font-family: 'Poppins', sans-serif;
+    display: block; /* מבטיח שהוא יתפוס שורה מלאה */
+}
+
+#submit-btn:hover {
+    transform: translateY(-2px); /* אפקט קפיצה קטן */
+    box-shadow: 0 6px 20px rgba(188, 0, 45, 0.4);
+    filter: brightness(1.1);
+}
+
+#submit-btn:active {
+    transform: translateY(0);
+}
+
+
 /* Modals */
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
-.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; }
+.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; text-align: center; margin-bottom: 25px; width: 100%;}
 .close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
 
 input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
