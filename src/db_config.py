@@ -16,3 +16,5 @@ db = client["japan_trip"]
 
 #went to the table "Collection" specific inside data base were we keep our locations
 locations_collection = db["locations"]
+
+# food = db["food"]
