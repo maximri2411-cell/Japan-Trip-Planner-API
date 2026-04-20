@@ -16,7 +16,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 
 .intro-box { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; max-width: 700px; margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.2); direction: rtl; }
 
-/* תיקון כפתורים - גודל אחיד לכולם */
+/* כפתורי Hero - גודל אחיד */
 .hero-btn-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
 .hero-btn, .weather-link { 
     width: 180px; 
@@ -33,38 +33,55 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     transition: 0.3s; 
     text-decoration: none; 
     font-size: 16px;
+    padding: 0;
 }
 .hero-btn:hover, .weather-link:hover { background: var(--japan-red); border-color: var(--japan-red); }
 
-/* Tips Section - העלאת הכותרת ומרכוז */
+/* Tips Section - העלאה ומרכוז כותרת */
 .tips-container { 
     background: white; 
-    padding: 20px 40px 40px; /* צמצמתי מרווח עליון ל-20 */
+    padding: 20px 40px 40px; 
     border-radius: 20px; 
-    margin-top: -100px; /* הגדלתי את הציפה למעלה */
+    margin-top: -100px; 
     position: relative; 
     box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
     margin-bottom: 50px; 
     text-align: center; 
 }
-.section-title { color: var(--japan-red); margin-bottom: 30px; }
+.section-title { color: var(--japan-red); margin-bottom: 30px; width: 100%; text-align: center; }
 
-/* Filter Buttons */
-.filter-section { text-align: center; margin-bottom: 50px; }
-.filter-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
-.filter-btn {
-    padding: 10px 25px;
-    border: 2px solid var(--japan-red);
+/* דאשבורד סינון חדש - עיצוב הבועה */
+.filters-dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
     background: white;
-    color: var(--japan-red);
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
-.filter-btn.active, .filter-btn:hover { background: var(--japan-red); color: white; }
 
-/* Cards & Grid */
+.filter-box { display: flex; flex-direction: column; text-align: left; }
+.filter-box label { font-size: 0.75rem; font-weight: 600; color: var(--japan-red); margin-left: 15px; margin-bottom: 2px; }
+
+.custom-select {
+    padding: 8px 15px;
+    border: 2px solid #f0f0f0;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+    min-width: 160px;
+}
+.custom-select:focus { border-color: var(--japan-red); }
+
+/* Grid & Cards */
 .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
 .location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
@@ -77,5 +94,9 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
 .modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; }
 .close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
-.add-main-btn { padding: 15px 40px; background: var(--japan-red); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; }
+
+.form-group { display: flex; gap: 10px; margin-bottom: 15px; }
+input, textarea, .form-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
+
+.add-main-btn { padding: 15px 40px; background: var(--japan-red); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; display: block; margin: 0 auto; }
 .nav-link-btn { display: block; width: 100%; text-align: center; padding: 12px; background: #4285F4; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; }

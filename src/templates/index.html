@@ -51,12 +51,43 @@
     </section>
 
     <section class="filter-section">
-        <h2 class="section-title">Filter by City 🏙️</h2>
-        <div id="city-filters" class="filter-container">
-            </div>
-        
-        <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
-    </section>
+    <h2 class="section-title">Plan Your Adventure ⛩️</h2>
+    
+    <div class="filters-dashboard">
+        <div class="filter-box">
+            <label>City</label>
+            <select id="filter-city" class="custom-select">
+                <option value="all">All Cities</option>
+            </select>
+        </div>
+
+        <div class="filter-box">
+            <label>Category</label>
+            <select id="filter-category" class="custom-select">
+                <option value="all">All Categories</option>
+                <option value="Food">🍣 Food & Drinks</option>
+                <option value="Culture">⛩️ Culture & Temples</option>
+                <option value="Shopping">🛍️ Shopping</option>
+                <option value="Nature">🌳 Nature</option>
+                <option value="General">📍 General</option>
+            </select>
+        </div>
+
+        <div class="filter-box">
+            <label>Min Rating</label>
+            <select id="filter-rating" class="custom-select">
+                <option value="0">All Ratings</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4+)</option>
+                <option value="3">⭐⭐⭐ (3+)</option>
+                <option value="2">⭐⭐ (2+)</option>
+                <option value="1">⭐ (1+)</option>
+            </select>
+        </div>
+    </div>
+    
+    <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
+</section>
 
     <div id="location-modal" class="modal">
         <div class="modal-content">

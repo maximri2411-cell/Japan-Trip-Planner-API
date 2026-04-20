@@ -17,34 +17,66 @@ window.onclick = (e) => {
     if (e.target == detailsModal) detailsModal.style.display = "none";
 }
 
+// פונקציית טעינה ראשונית
 async function fetchLocations() {
     try {
         const response = await fetch('http://127.0.0.1:5000/locations/all');
         allLocations = await response.json();
-        renderFilters();
+        updateCityDropdown();
         displayLocations(allLocations);
     } catch (error) { console.error("Error fetching locations"); }
+}
+
+// פונקציית סינון משולבת (עיר + קטגוריה + דירוג)
+async function applyFilters() {
+    const city = document.getElementById('filter-city').value;
+    const category = document.getElementById('filter-category').value;
+    const rating = document.getElementById('filter-rating').value;
+
+    let url = 'http://127.0.0.1:5000/locations/all?';
+    if (city !== 'all') url += `city=${city}&`;
+    if (category !== 'all') url += `category=${category}&`;
+    if (rating !== '0') url += `rating=${rating}&`;
+
+    try {
+        const response = await fetch(url);
+        const filteredData = await response.json();
+        displayLocations(filteredData);
+    } catch (error) { console.error("Filter error:", error); }
+}
+
+// האזנה לשינויים בבחירה
+document.getElementById('filter-city').onchange = applyFilters;
+document.getElementById('filter-category').onchange = applyFilters;
+document.getElementById('filter-rating').onchange = applyFilters;
+
+function updateCityDropdown() {
+    const citySelect = document.getElementById('filter-city');
+    const cities = [...new Set(allLocations.map(l => l.city))];
+    citySelect.innerHTML = '<option value="all">All Cities</option>';
+    cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.innerText = city.charAt(0).toUpperCase() + city.slice(1);
+        citySelect.appendChild(option);
+    });
 }
 
 function displayLocations(locations) {
     const container = document.getElementById('locations-container');
     container.innerHTML = '';
-    
     locations.forEach(loc => {
         const card = document.createElement('div');
         card.className = 'location-card';
         card.onclick = () => showDetails(loc);
         
-        // תיקון: אם אין תמונה ב-DB, שמים ריבוע אפור עם טקסט במקום את תמונת ה-Hero
-        const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
-            ? loc.image_url 
-            : "https://via.placeholder.com/400x250?text=No+Image+Added";
+        const imgUrl = (loc.image_url && loc.image_url.trim() !== "") ? loc.image_url : "https://via.placeholder.com/400x250?text=No+Image+Added";
         
         card.innerHTML = `
             <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://via.placeholder.com/400x250?text=Image+Error'">
             <div class="card-text">
                 <h3 style="color:#bc002d;">${loc.name}</h3>
-                <p style="font-size:0.9rem; color:#888;">📍 ${loc.city}</p>
+                <p style="font-size:0.9rem; color:#888;">📍 ${loc.city} | ${loc.category || 'General'}</p>
                 <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
             </div>
         `;
@@ -54,37 +86,19 @@ function displayLocations(locations) {
 
 function showDetails(loc) {
     const body = document.getElementById('details-body');
-    const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
-            ? loc.image_url 
-            : "https://via.placeholder.com/400x250?text=No+Image+Added";
-    
+    const imgUrl = (loc.image_url && loc.image_url.trim() !== "") ? loc.image_url : "https://via.placeholder.com/400x250?text=No+Image+Added";
+    const mapQuery = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
+    const googleMapsLink = (loc.map_url && loc.map_url.startsWith('http')) ? loc.map_url : `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
     body.innerHTML = `
         <img src="${imgUrl}" style="width:100%; border-radius:15px; margin-bottom:15px; max-height:300px; object-fit:cover;">
         <h2 style="color:#bc002d;">${loc.name}</h2>
-        <p><strong>City:</strong> ${loc.city}</p>
+        <p><strong>City:</strong> ${loc.city} | <strong>Category:</strong> ${loc.category || 'General'}</p>
         <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
         <p style="margin:15px 0;">${loc.description || 'No description provided.'}</p>
-        <a href="${loc.map_url || '#'}" target="_blank" class="nav-link-btn">📍 View on Google Maps</a>
+        <a href="${googleMapsLink}" target="_blank" class="nav-link-btn">📍 View on Google Maps</a>
     `;
     detailsModal.style.display = "block";
-}
-
-function renderFilters() {
-    const filterContainer = document.getElementById('city-filters');
-    const cities = ['all', ...new Set(allLocations.map(l => l.city))];
-    filterContainer.innerHTML = '';
-    
-    cities.forEach(city => {
-        const btn = document.createElement('button');
-        btn.className = `filter-btn ${city === 'all' ? 'active' : ''}`;
-        btn.innerText = city.charAt(0).toUpperCase() + city.slice(1);
-        btn.onclick = () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            displayLocations(city === 'all' ? allLocations : allLocations.filter(l => l.city === city));
-        };
-        filterContainer.appendChild(btn);
-    });
 }
 
 document.getElementById('add-location-form').onsubmit = async (e) => {
@@ -92,6 +106,7 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
     const newLoc = {
         name: document.getElementById('name').value,
         city: document.getElementById('city').value,
+        category: document.getElementById('category').value,
         rating: parseInt(document.getElementById('rating').value) || 5,
         image_url: document.getElementById('image_url').value,
         description: document.getElementById('description').value,
