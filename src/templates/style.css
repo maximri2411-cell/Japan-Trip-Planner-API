@@ -174,20 +174,24 @@ body {
     margin-top: 20px;
     padding: 12px 30px;
     font-size: 1rem;
-    background-color: #bc002d; 
+    background-color: transparent; 
     color: white;
-    border: none;
+    border: 2px solid white;
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
     font-weight: 600;
+    min-width: 180px;
 }
 
 .hero-btn:hover {
-    background-color: #900022;
+    background-color: #bc002d;
+    border-color: #bc002d;
     transform: scale(1.05);
 }
 
 #explore-btn, #add-new-btn, #tips-btn {
-    background-color: inherit;
+    margin-top: 20px;   
+    background-color: transparent;
+    border: 2px solid white;
 }
