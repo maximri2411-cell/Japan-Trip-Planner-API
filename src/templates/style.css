@@ -64,7 +64,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Grid for Locations */
 .container {
     max-width: 1200px;
     margin: 50px auto;
@@ -154,22 +153,41 @@ body {
     font-family: inherit;
 }
 
-#submit-btn:hover {
-    background-color: #218838 !important;
+#submit-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-#add-new-btn {
+#submit-btn:hover {
+    background-color: #218838;
+}
+
+.hero-btn {
     margin-top: 20px;
     padding: 12px 30px;
     font-size: 1rem;
-    background-color: #28a745;
+    background-color: #bc002d; 
     color: white;
     border: none;
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
+    font-weight: 600;
 }
 
-#add-new-btn:hover {
-    background-color: #218838;
+.hero-btn:hover {
+    background-color: #900022;
     transform: scale(1.05);
+}
+
+#explore-btn, #add-new-btn, #tips-btn {
+    background-color: inherit;
+}

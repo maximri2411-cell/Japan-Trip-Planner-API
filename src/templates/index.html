@@ -14,9 +14,10 @@
             <div class="hero-content">
                 <h1>Japan Trip 2026</h1>
                 <p>Exploring the Land of the Rising Sun</p>
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-                    <button id="explore-btn">Start Exploring</button>
-                    <button id="add-new-btn">Add New Place</button>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap">
+                    <button id="explore-btn" class="hero-btn">Start Exploring</button>
+                    <button id="add-new-btn" class="hero-btn">Add New Place</button>
+                    <button id="tips-btn" class="hero-btn">Tips for Trip</button>
                 </div>
             </div>
         </div>
@@ -24,6 +25,22 @@
 
     <main class="container">
         <section id="stats-summary"></section>
+
+        <section id="tips-section" class="container" style="display: none; background: white; padding: 30px; border-radius: 15px; margin-bottom: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <h2 style="color: #bc002d; margin-bottom: 20px;">Travel Tips & Tools ⚡️</h2>
+            <div class="grid">
+                <div class="card-content" style="border: 1px solid #eee; border-radius: 10px; padding: 15px;">
+                    <h3>Currency Converter</h3>
+                    <p>Yen to Shekel converter.</p>
+                    <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=ILS&To=JPY" target="_blank" class="map-btn">Open XE</a>
+        </div>
+        <div class="card-content" style="border: 1px solid #eee; border-radius: 10px; padding: 15px;">
+            <h3>Google Translate</h3>
+            <p>Translator app.</p>
+            <a href="https://translate.google.com" target="_blank" class="map-btn" style="background: #34a853;">Open Translate</a>
+        </div>
+    </div>
+</section>
 
         <section class="add-location-section">
             <h2 style="margin-bottom: 20px;">Add a New Destination 📍</h2>

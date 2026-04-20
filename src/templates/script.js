@@ -73,5 +73,11 @@ document.getElementById('add-new-btn').addEventListener('click', () => {
     document.querySelector('.add-location-section').scrollIntoView({ behavior: 'smooth' });
 });
 
+document.getElementById('tips-btn').addEventListener('click', () => {
+    const tipsSection = document.getElementById('tips-section');
+    tipsSection.style.display = 'block'; // מציג את החלק המוסתר
+    tipsSection.scrollIntoView({ behavior: 'smooth' });
+});
+
 window.onload = fetchLocations;
 
