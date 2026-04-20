@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Japan Trip | My Journey</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -12,68 +12,69 @@
 <header class="hero">
     <div class="hero-overlay">
         <div class="hero-content">
-            <h1>Japan Trip 2026</h1>
-            <p>Exploring the Land of the Rising Sun</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap">
+            <h1>JAPAN TRIP 2026</h1>
+            
+            <div class="intro-box">
+                <p>ברוכים הבאים ליומן המסע שלי ביפן. האתר הזה נבנה כדי לתעד את המקומות המדהימים שביקרתי בהם, לרכז טיפים חשובים ולתכנן את היעד הבא בארץ השמש העולה.</p>
+            </div>
+
+            <div class="hero-btn-container">
                 <button id="explore-btn" class="hero-btn">Start Exploring</button>
                 <button id="add-new-btn" class="hero-btn">Add New Place</button>
-                <button id="tips-btn" class="hero-btn">Tips for Trip</button>
+                <button id="tips-btn" class="hero-btn">Tools & Tips</button>
             </div>
         </div>
     </div>
 </header>
 
 <main class="container">
-    <section id="stats-summary"></section>
-
-<section id="tips-section" class="container" style="display: none; background: white; padding: 30px; border-radius: 15px; margin-bottom: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
-    <h2 style="color: #bc002d; margin-bottom: 20px;">Travel Tips & Tools</h2>
-    <div class="grid">
-        <div class="card-content" style="border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center;">
-            <h3>Currency</h3>
-            <p>Yen to Shekel</p>
-            <button onclick="navigateTo('currency')" class="map-btn" style="width: 100%; border: none;">Go to Converter</button>
+    
+    <section id="tips-section" class="tips-container">
+        <h2 class="section-title">Travel Tips & Tools ⚡️</h2>
+        <div class="grid">
+            <div class="tool-card">
+                <h3>Currency</h3>
+                <p>Yen to Shekel</p>
+                <button onclick="navigateTo('currency')" class="map-btn">Go to Converter</button>
+            </div>
+            <div class="tool-card">
+                <h3>Translate</h3>
+                <p>Language help</p>
+                <button onclick="navigateTo('translate')" class="map-btn green-btn">Go to Translate</button>
+            </div>
+            <div class="tool-card">
+                <h3>Hotels</h3>
+                <p>Bookings</p>
+                <button onclick="navigateTo('hotels')" class="map-btn orange-btn">Bookings</button>
+            </div>
         </div>
+    </section>
 
-        <div class="card-content" style="border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center;">
-            <h3>Translate</h3>
-            <p>Language help</p>
-            <button onclick="navigateTo('translate')" class="map-btn" style="width: 100%; border: none; background: #34a853;">Go to Translate</button>
-        </div>
+    <section class="filter-section">
+        <h2 class="section-title">Filter by City 🏙️</h2>
+        <div id="city-filters" class="filter-container">
+            <button class="filter-btn active" onclick="filterByCity('all')">All Places</button>
+            </div>
+    </section>
 
-        <div class="card-content" style="border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center;">
-            <h3>Accommodations</h3>
-            <p>Hotels & Ryokans</p>
-            <button onclick="navigateTo('hotels')" class="map-btn" style="width: 100%; border: none; background: #f4a261;">Bookings</button>
-        </div>
-    </div>
-</section>
+    <section id="add-section" class="form-card">
+        <h2>Add a New Destination 📍</h2>
+        <form id="add-location-form">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Location Name" required>
+                <input type="text" id="city" placeholder="City (Tokyo, Kyoto...)" required>
+            </div>
+            <textarea id="description" placeholder="What was special about this place?" rows="3"></textarea>
+            <button type="submit" id="submit-btn">Save Experience</button>
+        </form>
+    </section>
 
-<section class="add-location-section">
-    <h2 style="margin-bottom: 20px;">Add a New Destination 📍</h2>
-    <form id="add-location-form" class="location-form">
-        <div class="form-group">
-            <input type="text" id="name" placeholder="Location Name (e.g. Shibuya)" required>
-            <input type="text" id="city" placeholder="City" required>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-            <input type="text" id="category" placeholder="Category (Food, Shrine...)">
-            <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5">
-        </div>
-        <textarea id="description" placeholder="Description" rows="3" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
-        <input type="url" id="map_url" placeholder="Google Maps Link" style="margin-top: 15px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-        <button type="submit" id="submit-btn">Save Location</button>
-    </form>
-</section>
+    <section id="locations-grid">
+        <div id="locations-container" class="grid">
+            </div>
+    </section>
+</main>
 
-<section id="locations-grid">
-    <h2 style="margin-bottom: 25px;">My Destinations</h2>
-    <div id="locations-container" class="grid">
-        <p class="loading">Loading your journey...</p>
-    </div>
-        </section>
-    </main>
-
-    <script src="/script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

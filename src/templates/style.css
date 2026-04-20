@@ -1,197 +1,113 @@
-/* General Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --japan-red: #bc002d;
+    --dark-grey: #333;
+    --light-bg: #f8f9fa;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
+    background-color: var(--light-bg);
+    margin: 0;
 }
 
-/* Kyoto Background */
+/* Hero & Intro Box */
 .hero {
-    height: 80vh;
-    background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop'); /* Mount Fuji Image */
+    height: 90vh;
+    background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
 }
 
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.4); /* Darkens the image so text is readable */
-    width: 100%;
+    background: rgba(0,0,0,0.5);
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.hero-content h1 {
-    font-size: 4rem;
-    margin-bottom: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+.intro-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 20px auto;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
-.hero-content p {
-    font-size: 1.5rem;
-    font-weight: 300;
-}
-
-#explore-btn {
-    margin-top: 20px;
-    padding: 12px 30px;
-    font-size: 1rem;
-    background-color: #bc002d; /* Japan Sun Red */
+.intro-box p {
     color: white;
-    border: none;
-    border-radius: 50px;
+    font-size: 1.1rem;
+    direction: rtl; /* לשיתוף חוויה בעברית */
+}
+
+/* Filters */
+.filter-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--japan-red);
+    background: white;
+    color: var(--japan-red);
+    border-radius: 25px;
     cursor: pointer;
+    font-weight: 600;
     transition: 0.3s;
 }
 
-#explore-btn:hover {
-    background-color: #900022;
-    transform: scale(1.05);
+.filter-btn.active, .filter-btn:hover {
+    background: var(--japan-red);
+    color: white;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 0 20px;
+/* כרטיסיות הטיפים - עכשיו מעוצבות יותר */
+.tips-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    margin-top: -50px; /* "קופץ" מעל ה-Hero */
+    position: relative;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    margin-bottom: 50px;
+}
+
+.section-title {
+    text-align: center;
+    color: var(--japan-red);
+    margin-bottom: 30px;
+}
+
+/* כפתורי Hero אחידים */
+.hero-btn {
+    padding: 12px 30px;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 5px;
+    transition: 0.3s;
+}
+
+.hero-btn:hover {
+    background: var(--japan-red);
+    border-color: var(--japan-red);
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    align-items: stretch; 
-}
-
-.location-card {
-    background: white;
-    border-radius: 15px;
-    padding: 0; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease;
-    border: 1px solid #eee;
-    overflow: hidden;
-}
-
-.location-card:hover {
-    transform: translateY(-5px);
-}
-
-.card-content {
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; 
-}
-
-.card-content h3 {
-    color: #bc002d;
-    margin-bottom: 12px;
-    font-size: 1.4rem;
-}
-
-.card-content p {
-    font-size: 0.95rem;
-    color: #555;
-    flex-grow: 1; 
-    margin-bottom: 20px;
-}
-
-.map-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #4285F4;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-align: center;
-    transition: background 0.2s;
-}
-
-.map-btn:hover {
-    background: #3367d6;
-}
-
-/* Add Location Form Styles */
-.add-location-section {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    margin-bottom: 50px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-}
-
-.form-group {
-    display: flex;
-    gap: 15px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-family: inherit;
-}
-
-#submit-btn {
-    margin-top: 20px;
-    width: 100%;
-    padding: 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#submit-btn:hover {
-    background-color: #218838;
-}
-
-.hero-btn {
-    margin-top: 20px;
-    padding: 12px 30px;
-    font-size: 1rem;
-    background-color: transparent; 
-    color: white;
-    border: 2px solid white;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 600;
-    min-width: 180px;
-}
-
-.hero-btn:hover {
-    background-color: #bc002d;
-    border-color: #bc002d;
-    transform: scale(1.05);
-}
-
-#explore-btn, #add-new-btn, #tips-btn {
-    margin-top: 20px;   
-    background-color: transparent;
-    border: 2px solid white;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
