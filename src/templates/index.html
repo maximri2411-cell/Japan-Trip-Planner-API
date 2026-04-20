@@ -12,7 +12,8 @@
 <header class="hero">
     <div class="hero-overlay">
         <div class="hero-content">
-            <h1>JAPAN TRIP 2026</h1>
+            <h1 class="main-title">JAPAN TRIP 2026</h1>
+            <div id="weather-widget" class="weather-top">Loading weather...</div>
             
             <div class="intro-box">
                 <p>ברוכים הבאים ליומן המסע שלי ביפן. האתר הזה נבנה כדי לתעד את המקומות המדהימים שביקרתי בהם, לרכז טיפים חשובים ולתכנן את היעד הבא בארץ השמש העולה.</p>
@@ -20,7 +21,6 @@
 
             <div class="hero-btn-container">
                 <button id="explore-btn" class="hero-btn">Start Exploring</button>
-                <button id="add-new-btn" class="hero-btn">Add New Place</button>
                 <button id="tips-btn" class="hero-btn">Tools & Tips</button>
             </div>
         </div>
@@ -35,17 +35,17 @@
             <div class="tool-card">
                 <h3>Currency</h3>
                 <p>Yen to Shekel</p>
-                <button onclick="navigateTo('currency')" class="map-btn">Go to Converter</button>
+                <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=ILS&To=JPY" target="_blank" class="nav-link-btn">Go to Converter</a>
             </div>
             <div class="tool-card">
                 <h3>Translate</h3>
                 <p>Language help</p>
-                <button onclick="navigateTo('translate')" class="map-btn green-btn">Go to Translate</button>
+                <a href="https://translate.google.com/?sl=iw&tl=ja" target="_blank" class="nav-link-btn green-btn">Go to Translate</a>
             </div>
             <div class="tool-card">
                 <h3>Hotels</h3>
                 <p>Bookings</p>
-                <button onclick="navigateTo('hotels')" class="map-btn orange-btn">Bookings</button>
+                <a href="https://www.booking.com/country/jp.html" target="_blank" class="nav-link-btn orange-btn">Bookings</a>
             </div>
         </div>
     </section>
@@ -53,25 +53,43 @@
     <section class="filter-section">
         <h2 class="section-title">Filter by City 🏙️</h2>
         <div id="city-filters" class="filter-container">
-            <button class="filter-btn active" onclick="filterByCity('all')">All Places</button>
-            </div>
+            <button class="filter-btn active" data-city="all">All Places</button>
+        </div>
+        <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
     </section>
 
-    <section id="add-section" class="form-card">
-        <h2>Add a New Destination 📍</h2>
-        <form id="add-location-form">
-            <div class="form-group">
-                <input type="text" id="name" placeholder="Location Name" required>
-                <input type="text" id="city" placeholder="City (Tokyo, Kyoto...)" required>
-            </div>
-            <textarea id="description" placeholder="What was special about this place?" rows="3"></textarea>
-            <button type="submit" id="submit-btn">Save Experience</button>
-        </form>
-    </section>
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add a New Destination 📍</h2>
+            <form id="add-location-form">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Location Name" required>
+                    <input type="text" id="city" placeholder="City (e.g. Tokyo)" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5">
+                    <input type="text" id="image_url" placeholder="Image URL (Optional)">
+                </div>
+                <textarea id="description" placeholder="Share your experience..." rows="4"></textarea>
+                <input type="url" id="map_url" placeholder="Google Maps Link">
+                <button type="submit" id="submit-btn">Save to Journey</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="details-modal" class="modal">
+        <div class="modal-content details-view">
+            <span class="close-details">&times;</span>
+            <div id="details-body">
+                </div>
+        </div>
+    </div>
 
     <section id="locations-grid">
         <div id="locations-container" class="grid">
-            </div>
+            <p class="loading">Loading your journey...</p>
+        </div>
     </section>
 </main>
 
