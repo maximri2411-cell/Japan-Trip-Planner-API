@@ -133,4 +133,25 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
     }
 };
 
+
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const body = document.body;
+
+darkModeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    
+    if (body.classList.contains('dark-mode')) {
+        darkModeToggle.innerHTML = "Light Mode";
+        localStorage.setItem('theme', 'dark'); // שומר את הבחירה של המשתמש
+    } else {
+        darkModeToggle.innerHTML = "Dark Mode";
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    darkModeToggle.innerHTML = "Light Mode";
+}
+
 window.onload = fetchLocations;

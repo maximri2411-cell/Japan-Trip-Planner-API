@@ -189,3 +189,68 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; bo
     border-color: #3DDC84;
     color: #1b5e20;
 }
+
+
+
+
+:root {
+    --neon-red: #ff003c;
+    --neon-glow: rgba(255, 0, 60, 0.4); /* הילה אדומה */
+}
+
+body.dark-mode {
+    background-color: #0d0d0f !important;
+    color: #efefef !important;
+}
+
+body.dark-mode .tips-container, 
+body.dark-mode .location-card, 
+body.dark-mode .modal-content, 
+body.dark-mode .filters-dashboard,
+body.dark-mode .tool-card {
+    background-color: #1a1a1e !important;
+    border: 1px solid #333 !important;
+    color: white !important;
+    box-shadow: 0 0 20px var(--neon-glow) !important;
+}
+
+body.dark-mode .card-text p, 
+body.dark-mode .filter-box label {
+    color: #bbb !important;
+}
+
+.mode-switch {
+    width: 180px;           
+    height: 50px;           
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: rgba(0, 0, 0, 0.4); 
+    border: 2px solid white; 
+    color: white; 
+    border-radius: 50px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    font-size: 16px;
+    font-family: inherit;
+    margin-bottom: 25px;    
+    backdrop-filter: blur(5px);
+}
+
+.mode-switch:hover {
+    background: var(--japan-red);
+    border-color: var(--japan-red);
+    box-shadow: 0 0 15px var(--japan-red);
+}
+
+body.dark-mode .mode-switch {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: white;
+}
+
+body.dark-mode .mode-switch:hover {
+    background: var(--japan-red);
+    border-color: var(--japan-red);
+    box-shadow: 0 0 15px var(--japan-red);
+}
