@@ -3,12 +3,10 @@ let allLocations = [];
 const addModal = document.getElementById("location-modal");
 const detailsModal = document.getElementById("details-modal");
 
-// סגירת מודאלים
 document.querySelector(".close-modal").onclick = () => addModal.style.display = "none";
 document.querySelector(".close-details").onclick = () => detailsModal.style.display = "none";
 document.getElementById("open-modal-btn").onclick = () => addModal.style.display = "block";
 
-// גלילה חלקה
 document.getElementById('explore-btn').onclick = () => document.getElementById('locations-grid').scrollIntoView({ behavior: 'smooth' });
 document.getElementById('tips-btn').onclick = () => document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
 
@@ -17,26 +15,22 @@ window.onclick = (e) => {
     if (e.target == detailsModal) detailsModal.style.display = "none";
 }
 
-// טעינה ראשונית
 async function fetchLocations() {
     try {
         const response = await fetch('http://127.0.0.1:5000/locations/all');
         allLocations = await response.json();
-        updateDynamicFilters(); // כאן קורה הקסם הדינמי
+        updateDynamicFilters();
         displayLocations(allLocations);
     } catch (error) { console.error("Error fetching locations"); }
 }
 
-// יצירת פילטרים על בסיס הנתונים שקיימים ב-DB
 function updateDynamicFilters() {
     const citySelect = document.getElementById('filter-city');
     const categorySelect = document.getElementById('filter-category');
 
-    // שליפת ערים וקטגוריות ייחודיות מתוך כל הנתונים
     const cities = [...new Set(allLocations.map(l => l.city).filter(c => c))];
     const categories = [...new Set(allLocations.map(l => l.category).filter(cat => cat))];
 
-    // עדכון דרופדאון ערים
     citySelect.innerHTML = '<option value="all">All Cities</option>';
     cities.forEach(city => {
         const opt = document.createElement('option');
@@ -45,7 +39,6 @@ function updateDynamicFilters() {
         citySelect.appendChild(opt);
     });
 
-    // עדכון דרופדאון קטגוריות (דינמי לגמרי!)
     categorySelect.innerHTML = '<option value="all">All Categories</option>';
     categories.forEach(cat => {
         const opt = document.createElement('option');
@@ -55,7 +48,6 @@ function updateDynamicFilters() {
     });
 }
 
-// פונקציית הסינון
 async function applyFilters() {
     const city = document.getElementById('filter-city').value;
     const category = document.getElementById('filter-category').value;
@@ -73,7 +65,6 @@ async function applyFilters() {
     } catch (error) { console.error("Filter error:", error); }
 }
 
-// מאזינים לשינויים
 document.getElementById('filter-city').onchange = applyFilters;
 document.getElementById('filter-category').onchange = applyFilters;
 document.getElementById('filter-rating').onchange = applyFilters;
@@ -103,6 +94,7 @@ function displayLocations(locations) {
 function showDetails(loc) {
     const body = document.getElementById('details-body');
     const imgUrl = (loc.image_url && loc.image_url.trim() !== "") ? loc.image_url : "https://via.placeholder.com/400x250?text=No+Image+Added";
+
     const mapQuery = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
     const googleMapsLink = (loc.map_url && loc.map_url.startsWith('http')) ? loc.map_url : `https://www.google.com/maps/search/${mapQuery}`;
 
@@ -117,7 +109,6 @@ function showDetails(loc) {
     detailsModal.style.display = "block";
 }
 
-// הוספת מקום חדש
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
     const newLoc = {
@@ -138,7 +129,7 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
     if (res.ok) {
         addModal.style.display = "none";
         document.getElementById('add-location-form').reset();
-        fetchLocations(); // רענון הנתונים והפילטרים
+        fetchLocations();
     }
 };
 
