@@ -3,6 +3,8 @@
     --dark-grey: #333;
     --light-bg: #f8f9fa;
     --modal-bg: rgba(0, 0, 0, 0.85);
+    --neon-red: #ff003c;
+    --neon-glow: rgba(255, 0, 60, 0.4); 
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,11 +49,6 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
 }
 .section-title { color: var(--japan-red); margin-bottom: 30px; width: 100%; text-align: center; display: block;}
 
-
-
-
-
-
 .filters-dashboard {
     display: flex;
     justify-content: center;
@@ -65,8 +62,8 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
     max-width: fit-content;
     transition: 0.3s;
+    flex-wrap: wrap;
 }
-
 
 body.dark-mode .filters-dashboard {
     background: #141417;
@@ -83,7 +80,6 @@ body.dark-mode .filters-dashboard {
     position: relative;
     min-width: 200px;
 }
-
 
 .filter-box:not(:last-child)::after {
     content: "";
@@ -108,7 +104,7 @@ body.dark-mode .filters-dashboard {
     padding: 10px;
     border: 1px solid transparent;
     border-radius: 12px;
-    background: #f9f9f9; /* רקע קל לכל בחירה שיראה מודרני */
+    background: #f9f9f9;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     font-size: 1rem;
@@ -133,8 +129,6 @@ body.dark-mode .custom-select {
 body.dark-mode .custom-select:hover {
     background: #25252b;
 }
-
-
 
 .add-main-btn { 
     padding: 15px 40px; 
@@ -161,10 +155,19 @@ body.dark-mode .custom-select:hover {
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
 .location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
 .location-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-.card-img-mini { width: 100%; height: 200px; object-fit: cover; background: #f0f0f0; object-position: center; border-radius: 12px 12px 0 0; }
+
+/* ✅ Fixed - removed broken ?w=800&q=80 junk */
+.card-img-mini { 
+    width: 100%; 
+    height: 200px; 
+    object-fit: cover; 
+    background: #f0f0f0; 
+    object-position: center; 
+    border-radius: 12px 12px 0 0; 
+}
+
 .card-text { padding: 20px; }
 .star-rating { color: #f4c542; font-size: 1.2rem; }
-
 
 #submit-btn {
     width: 100%;
@@ -193,9 +196,8 @@ body.dark-mode .custom-select:hover {
     transform: translateY(0);
 }
 
-
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
-.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; text-align: center; margin-bottom: 25px; width: 100%;}
+.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; text-align: center; margin-bottom: 25px;}
 .close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
 
 input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
@@ -219,26 +221,8 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; bo
 .green-btn { background: #0f9d58 !important; }
 .red-btn { background: var(--japan-red) !important; }
 
-/* //////////////////////////////////// */
-/* Card for the apple and androit links */ 
 .app-hub h3 { margin-bottom: 10px; }
 .app-links { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-.app-links a {
-    font-size: 0.85rem;
-    color: var(--japan-red);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 5px 10px;
-    border: 1px solid var(--japan-red);
-    border-radius: 5px;
-}
-.app-links a:hover { background: var(--japan-red); color: white; }
-/* //////////////////////////////////// */
-
-
-.ios h3 { color: #555; } 
-.android h3 { color: #3DDC84; }
-
 .app-links a {
     background: white;
     border: 1px solid #ddd;
@@ -247,7 +231,12 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; bo
     border-radius: 8px;
     font-size: 0.8rem;
     transition: 0.2s;
+    text-decoration: none;
+    font-weight: 600;
 }
+
+.ios h3 { color: #555; } 
+.android h3 { color: #3DDC84; }
 
 .ios .app-links a:hover {
     background: #f0f0f0;
@@ -260,14 +249,7 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; bo
     color: #1b5e20;
 }
 
-
-
-//* Dark mode thing *//
-:root {
-    --neon-red: #ff003c;
-    --neon-glow: rgba(255, 0, 60, 0.4); 
-}
-
+/* Dark mode */
 body.dark-mode {
     background-color: #0d0d0f !important;
     color: #efefef !important;
@@ -287,6 +269,13 @@ body.dark-mode .tool-card {
 body.dark-mode .card-text p, 
 body.dark-mode .filter-box label {
     color: #bbb !important;
+}
+
+/* Dark mode search input */
+body.dark-mode #search-input {
+    background: #1a1a1e;
+    color: white;
+    border-color: #333;
 }
 
 .mode-switch {

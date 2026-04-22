@@ -17,8 +17,48 @@ window.onclick = (e) => {
  
 const PEXELS_API_KEY = 'jI8g2v4Sj9Ysf0UvLzr0Nvy2xKKeFRtke4oKKBGL2mnOe1oopDxXELrU';
 const imageCache = {};
- 
-// ✅ async added
+
+// ============================================
+// 🔍 SEARCH BAR
+// ============================================
+document.getElementById('search-input').addEventListener('input', () => {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allLocations.filter(loc =>
+        loc.name.toLowerCase().includes(query) ||
+        loc.city.toLowerCase().includes(query)
+    );
+    displayLocations(filtered);
+});
+
+// ============================================
+// 🔃 SORT
+// ============================================
+document.getElementById('sort-select').addEventListener('change', () => {
+    const sortVal = document.getElementById('sort-select').value;
+    let sorted = [...allLocations];
+
+    if (sortVal === 'rating-desc') sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (sortVal === 'rating-asc') sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+    if (sortVal === 'name-asc') sorted.sort((a, b) => a.name.localeCompare(b.name));
+    if (sortVal === 'city-asc') sorted.sort((a, b) => a.city.localeCompare(b.city));
+
+    displayLocations(sorted);
+});
+
+// ============================================
+// 🌀 SPINNER HELPERS
+// ============================================
+function showSpinner() {
+    document.getElementById('spinner').style.display = 'flex';
+}
+
+function hideSpinner() {
+    document.getElementById('spinner').style.display = 'none';
+}
+
+// ============================================
+// 🖼️ PEXELS IMAGE
+// ============================================
 async function getSmartImageUrl(loc) {
     if (!loc) return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';
  
@@ -45,18 +85,27 @@ async function getSmartImageUrl(loc) {
  
     return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';
 }
- 
- 
+
+// ============================================
+// 📦 FETCH FROM BACKEND
+// ============================================
 async function fetchLocations() {
+    showSpinner();
     try {
         const response = await fetch('http://127.0.0.1:5000/locations/all');
         allLocations = await response.json();
         updateDynamicFilters();
-        displayLocations(allLocations);
-    } catch (error) { console.error("Error fetching locations"); }
+        await displayLocations(allLocations);
+    } catch (error) {
+        console.error("Error fetching locations");
+    } finally {
+        hideSpinner();
+    }
 }
- 
- 
+
+// ============================================
+// 🔽 DYNAMIC FILTERS
+// ============================================
 function updateDynamicFilters() {
     const citySelect = document.getElementById('filter-city');
     const categorySelect = document.getElementById('filter-category');
@@ -80,8 +129,10 @@ function updateDynamicFilters() {
         categorySelect.appendChild(opt);
     });
 }
- 
- 
+
+// ============================================
+// 🎛️ APPLY FILTERS
+// ============================================
 async function applyFilters() {
     const city = document.getElementById('filter-city').value;
     const category = document.getElementById('filter-category').value;
@@ -92,29 +143,52 @@ async function applyFilters() {
     if (category !== 'all') url += `category=${category}&`;
     if (rating !== '0') url += `rating=${rating}&`;
  
+    showSpinner();
     try {
         const response = await fetch(url);
         const filteredData = await response.json();
-        displayLocations(filteredData);
-    } catch (error) { console.error("Filter error:", error); }
+        await displayLocations(filteredData);
+    } catch (error) {
+        console.error("Filter error:", error);
+    } finally {
+        hideSpinner();
+    }
 }
  
 document.getElementById('filter-city').onchange = applyFilters;
 document.getElementById('filter-category').onchange = applyFilters;
 document.getElementById('filter-rating').onchange = applyFilters;
- 
- 
-// ✅ async added + forEach changed to for...of so await works
+
+// ============================================
+// 🃏 DISPLAY CARDS
+// ============================================
 async function displayLocations(locations) {
     const container = document.getElementById('locations-container');
     container.innerHTML = '';
+
+    // ✅ No results message
+    if (!locations || locations.length === 0) {
+        container.innerHTML = `
+            <div style="
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 60px 20px;
+                color: #aaa;
+            ">
+                <div style="font-size: 3rem;">🗾</div>
+                <h3 style="margin-top: 15px; color: #bc002d;">No locations found</h3>
+                <p style="margin-top: 8px;">Try changing your filters or search term</p>
+            </div>
+        `;
+        return;
+    }
  
     for (const loc of locations) {
         const card = document.createElement('div');
         card.className = 'location-card';
         card.onclick = () => showDetails(loc);
  
-        const imgUrl = await getSmartImageUrl(loc); // ✅ await now works
+        const imgUrl = await getSmartImageUrl(loc);
  
         card.innerHTML = `
             <img src="${imgUrl}" class="card-img-mini" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';">
@@ -127,13 +201,14 @@ async function displayLocations(locations) {
         container.appendChild(card);
     }
 }
- 
- 
-// ✅ async added
+
+// ============================================
+// 🔍 SHOW DETAILS MODAL
+// ============================================
 async function showDetails(loc) {
     const body = document.getElementById('details-body');
  
-    const imgUrl = await getSmartImageUrl(loc); // ✅ await now works
+    const imgUrl = await getSmartImageUrl(loc);
  
     const mapQuery = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
     const googleMapsLink = (loc.map_url && loc.map_url.startsWith('http'))
@@ -150,8 +225,10 @@ async function showDetails(loc) {
     `;
     detailsModal.style.display = "block";
 }
- 
- 
+
+// ============================================
+// ➕ ADD NEW LOCATION
+// ============================================
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
     const newLoc = {
@@ -175,8 +252,10 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
         fetchLocations();
     }
 };
- 
- 
+
+// ============================================
+// 🌙 DARK MODE
+// ============================================
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const body = document.body;
  
@@ -197,4 +276,3 @@ if (localStorage.getItem('theme') === 'dark') {
 }
  
 window.onload = fetchLocations;
- 

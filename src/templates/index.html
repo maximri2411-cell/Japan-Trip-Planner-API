@@ -15,9 +15,7 @@
             <h1 class="main-title">PLAN YOUR JAPAN</h1>
             
             <div class="intro-box">
-                <p>
-                    <strong>Welcome to Japan Journey!</strong>
-                </p>
+                <p><strong>Welcome to Japan Journey!</strong></p>
             </div>
 
             <div class="hero-btn-container">
@@ -38,32 +36,26 @@
                 <h3>Currency 💴</h3>
                 <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=ILS&To=JPY" target="_blank" class="nav-link-btn">Converter</a>
             </div>
-
             <div class="tool-card">
-                <h3>Translate 🉐 </h3>
+                <h3>Translate 🉐</h3>
                 <a href="https://translate.google.com/?sl=iw&tl=ja" target="_blank" class="nav-link-btn">Translate</a>
             </div>
-
             <div class="tool-card">
                 <h3>Weather ☀️</h3>
                 <a href="https://www.accuweather.com/en/jp/japan-weather" target="_blank" class="nav-link-btn red-btn">Check Forecast</a>
             </div>
-
             <div class="tool-card">
                 <h3>Hotels & Hostels 🏢</h3>
                 <a href="https://www.booking.com/country/jp.html" target="_blank" class="nav-link-btn orange-btn">Bookings</a>
             </div>
-
             <div class="tool-card">
                 <h3>Attractions 🎟️</h3>
                 <a href="https://www.getyourguide.com" target="_blank" class="nav-link-btn red-btn">Get Your Guide</a>
             </div>
-
             <div class="tool-card">
                 <h3>Flights ✈️</h3>
                 <a href="https://booking.kayak.com" target="_blank" class="nav-link-btn red-btn">Book a flight</a>
             </div>
-
             <div class="tool-card app-hub ios">
                 <h3>iPhone Apps 🍎</h3>
                 <div class="app-links">
@@ -73,10 +65,8 @@
                     <a href="https://apps.apple.com/us/app/mymizu/id1480535233" target="_blank">Mymizu</a>
                     <a href="https://apps.apple.com/il/app/currency-converter-easy/id1038563997" target="_blank">Converter</a>
                     <a href="https://apps.apple.com/il/app/naver-papago-ai-translator/id1147874819" target="_blank">Translate</a>
-
                 </div>
             </div>
-
             <div class="tool-card app-hub android">
                 <h3>Android Apps 🤖</h3>
                 <div class="app-links">
@@ -89,43 +79,99 @@
     </section>
 
     <section class="filter-section">
-    <h2 class="section-title">Plan Your Adventure ⛩️</h2>
-    
-    <div class="filters-dashboard">
-        <div class="filter-box">
-            <label>City</label>
-            <select id="filter-city" class="custom-select">
-                <option value="all">All Cities</option>
-            </select>
+        <h2 class="section-title">Plan Your Adventure ⛩️</h2>
+
+        <!-- 🔍 SEARCH BAR -->
+        <div style="text-align:center; margin-bottom: 20px;">
+            <input 
+                type="text" 
+                id="search-input" 
+                placeholder="🔍 Search by name or city..." 
+                style="
+                    width: 100%;
+                    max-width: 500px;
+                    padding: 14px 20px;
+                    border-radius: 50px;
+                    border: 1px solid #ddd;
+                    font-size: 1rem;
+                    font-family: 'Poppins', sans-serif;
+                    outline: none;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+                "
+            >
         </div>
 
-        <div class="filter-box">
-            <label>Category</label>
-            <select id="filter-category" class="custom-select">
-                <option value="all">All Categories</option>
-                <option value="Food">Food & Drinks</option>
-                <option value="Culture">Culture & Temples</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Nature">Nature</option>
-                <option value="General">General</option>
-            </select>
-        </div>
+        <!-- 🎛️ FILTERS -->
+        <div class="filters-dashboard">
+            <div class="filter-box">
+                <label>City</label>
+                <select id="filter-city" class="custom-select">
+                    <option value="all">All Cities</option>
+                </select>
+            </div>
+            <div class="filter-box">
+                <label>Category</label>
+                <select id="filter-category" class="custom-select">
+                    <option value="all">All Categories</option>
+                    <option value="Food">Food & Drinks</option>
+                    <option value="Culture">Culture & Temples</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Nature">Nature</option>
+                    <option value="General">General</option>
+                </select>
+            </div>
+            <div class="filter-box">
+                <label>Min Rating</label>
+                <select id="filter-rating" class="custom-select">
+                    <option value="0">All Ratings</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4+)</option>
+                    <option value="3">⭐⭐⭐ (3+)</option>
+                    <option value="2">⭐⭐ (2+)</option>
+                    <option value="1">⭐ (1+)</option>
+                </select>
+            </div>
 
-        <div class="filter-box">
-            <label>Min Rating</label>
-            <select id="filter-rating" class="custom-select">
-                <option value="0">All Ratings</option>
-                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                <option value="4">⭐⭐⭐⭐ (4+)</option>
-                <option value="3">⭐⭐⭐ (3+)</option>
-                <option value="2">⭐⭐ (2+)</option>
-                <option value="1">⭐ (1+)</option>
-            </select>
+            <!-- 🔃 SORT -->
+            <div class="filter-box">
+                <label>Sort By</label>
+                <select id="sort-select" class="custom-select">
+                    <option value="default">Default</option>
+                    <option value="rating-desc">⭐ Rating: High to Low</option>
+                    <option value="rating-asc">⭐ Rating: Low to High</option>
+                    <option value="name-asc">🔤 Name: A → Z</option>
+                    <option value="city-asc">📍 City: A → Z</option>
+                </select>
+            </div>
         </div>
+        
+        <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
+    </section>
+
+    <!-- 🌀 SPINNER -->
+    <div id="spinner" style="
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        grid-column: 1 / -1;
+    ">
+        <div style="
+            width: 48px;
+            height: 48px;
+            border: 5px solid #f0f0f0;
+            border-top: 5px solid #bc002d;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        "></div>
     </div>
-    
-    <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
-</section>
+
+    <!-- Add spinner animation to page -->
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 
     <div id="location-modal" class="modal">
         <div class="modal-content">
