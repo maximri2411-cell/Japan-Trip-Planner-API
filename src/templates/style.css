@@ -156,7 +156,6 @@ body.dark-mode .custom-select:hover {
 .location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
 .location-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
 
-/* ✅ Fixed - removed broken ?w=800&q=80 junk */
 .card-img-mini { 
     width: 100%; 
     height: 200px; 
@@ -198,7 +197,32 @@ body.dark-mode .custom-select:hover {
 
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
 .modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; text-align: center; margin-bottom: 25px;}
-.close-modal, .close-details { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
+
+
+/* //////////////////////////////////////*/
+/* Close button in the card of locations */
+.close-modal, .close-details { 
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 2001;
+    color: white; 
+    background: rgba(0,0,0,0.3); 
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 1;
+}
+.close-modal:hover, .close-details:hover {
+    background: var(--japan-red);
+}
+/* //////////////////////////////////////*/
+
 
 input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-family: inherit; }
 .nav-link-btn { display: block; width: 100%; text-align: center; padding: 12px; background: var(--japan-red) !important; color: white !important; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; transition: 0.3s;}

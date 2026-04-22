@@ -3,24 +3,50 @@ let allLocations = [];
 const addModal = document.getElementById("location-modal");
 const detailsModal = document.getElementById("details-modal");
  
-document.querySelector(".close-modal").onclick = () => addModal.style.display = "none";
+
+// ============================================
+document.querySelector(".close-modal").onclick = () => {
+    addModal.style.display = "none";
+    document.getElementById('add-location-form').reset(); // Clean in the exit
+};
+// ============================================
+
+
+// ============================================
 document.querySelector(".close-details").onclick = () => detailsModal.style.display = "none";
+// ============================================
+
+
+// ============================================
 document.getElementById("open-modal-btn").onclick = () => addModal.style.display = "block";
- 
+// ============================================
+
+
+ // ============================================
 document.getElementById('explore-btn').onclick = () => document.getElementById('locations-grid').scrollIntoView({ behavior: 'smooth' });
+// ============================================
+
+
+// ============================================
 document.getElementById('tips-btn').onclick = () => document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
- 
+ // ============================================
+
 window.onclick = (e) => {
     if (e.target == addModal) addModal.style.display = "none";
     if (e.target == detailsModal) detailsModal.style.display = "none";
 }
  
-const PEXELS_API_KEY = 'jI8g2v4Sj9Ysf0UvLzr0Nvy2xKKeFRtke4oKKBGL2mnOe1oopDxXELrU';
-const imageCache = {};
 
 // ============================================
-// 🔍 SEARCH BAR
+// PEXELS key
+const PEXELS_API_KEY = 'jI8g2v4Sj9Ysf0UvLzr0Nvy2xKKeFRtke4oKKBGL2mnOe1oopDxXELrU';
+const imageCache = {};
 // ============================================
+
+
+// ============================================
+// Search bar
+
 document.getElementById('search-input').addEventListener('input', () => {
     const query = document.getElementById('search-input').value.toLowerCase();
     const filtered = allLocations.filter(loc =>
@@ -29,10 +55,12 @@ document.getElementById('search-input').addEventListener('input', () => {
     );
     displayLocations(filtered);
 });
+// ============================================
+
 
 // ============================================
-// 🔃 SORT
-// ============================================
+// Sort
+
 document.getElementById('sort-select').addEventListener('change', () => {
     const sortVal = document.getElementById('sort-select').value;
     let sorted = [...allLocations];
@@ -44,10 +72,12 @@ document.getElementById('sort-select').addEventListener('change', () => {
 
     displayLocations(sorted);
 });
+// ============================================
+
 
 // ============================================
-// 🌀 SPINNER HELPERS
-// ============================================
+// Spinners helpers
+
 function showSpinner() {
     document.getElementById('spinner').style.display = 'flex';
 }
@@ -55,10 +85,12 @@ function showSpinner() {
 function hideSpinner() {
     document.getElementById('spinner').style.display = 'none';
 }
+// ============================================
+
 
 // ============================================
-// 🖼️ PEXELS IMAGE
-// ============================================
+// PEXELS image
+
 async function getSmartImageUrl(loc) {
     if (!loc) return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';
  
@@ -85,10 +117,12 @@ async function getSmartImageUrl(loc) {
  
     return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';
 }
+// ============================================
+
 
 // ============================================
-// 📦 FETCH FROM BACKEND
-// ============================================
+// Fetch from backend
+
 async function fetchLocations() {
     showSpinner();
     try {
@@ -102,10 +136,12 @@ async function fetchLocations() {
         hideSpinner();
     }
 }
+// ============================================
+
 
 // ============================================
-// 🔽 DYNAMIC FILTERS
-// ============================================
+// Dynamic filters
+
 function updateDynamicFilters() {
     const citySelect = document.getElementById('filter-city');
     const categorySelect = document.getElementById('filter-category');
@@ -129,10 +165,12 @@ function updateDynamicFilters() {
         categorySelect.appendChild(opt);
     });
 }
+// ============================================
+
 
 // ============================================
-// 🎛️ APPLY FILTERS
-// ============================================
+// Apply filters
+
 async function applyFilters() {
     const city = document.getElementById('filter-city').value;
     const category = document.getElementById('filter-category').value;
@@ -154,19 +192,21 @@ async function applyFilters() {
         hideSpinner();
     }
 }
+// ============================================
+
  
 document.getElementById('filter-city').onchange = applyFilters;
 document.getElementById('filter-category').onchange = applyFilters;
 document.getElementById('filter-rating').onchange = applyFilters;
 
 // ============================================
-// 🃏 DISPLAY CARDS
-// ============================================
+// Display cards
+
 async function displayLocations(locations) {
     const container = document.getElementById('locations-container');
     container.innerHTML = '';
 
-    // ✅ No results message
+    // No results message
     if (!locations || locations.length === 0) {
         container.innerHTML = `
             <div style="
@@ -201,10 +241,12 @@ async function displayLocations(locations) {
         container.appendChild(card);
     }
 }
+// ============================================
+
 
 // ============================================
-// 🔍 SHOW DETAILS MODAL
-// ============================================
+// Shoe details model
+
 async function showDetails(loc) {
     const body = document.getElementById('details-body');
  
@@ -225,12 +267,16 @@ async function showDetails(loc) {
     `;
     detailsModal.style.display = "block";
 }
+// ============================================
+
 
 // ============================================
-// ➕ ADD NEW LOCATION
-// ============================================
+// Add new location
+
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
+
+    // Data gather
     const newLoc = {
         name: document.getElementById('name').value,
         city: document.getElementById('city').value,
@@ -241,21 +287,32 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
         map_url: document.getElementById('map_url').value,
         visited: true
     };
+
+    try {
     const res = await fetch('http://127.0.0.1:5000/locations/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLoc)
     });
+
     if (res.ok) {
-        addModal.style.display = "none";
-        document.getElementById('add-location-form').reset();
-        fetchLocations();
+            alert("Location added successfully!"); // visual message of success
+            addModal.style.display = "none";
+            document.getElementById('add-location-form').reset(); // Clean the fileds
+            fetchLocations(); // Refresh
+        } else {
+            alert("Error: Could not save location.");
+        }
+    } catch (err) {
+        console.error("Fetch error:", err);
     }
 };
+// ============================================
+
 
 // ============================================
-// 🌙 DARK MODE
-// ============================================
+// Dark mode
+
 const darkModeToggle = document.getElementById('dark-mode-toggle');
 const body = document.body;
  
@@ -274,5 +331,8 @@ if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-mode');
     darkModeToggle.innerHTML = "Light Mode";
 }
+// ============================================
  
+
+
 window.onload = fetchLocations;
