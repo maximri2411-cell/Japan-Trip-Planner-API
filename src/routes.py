@@ -28,7 +28,8 @@ def add_location():
         "description": cleaned_data.get("description"),
         "category": cleaned_data.get("category"),
         "rating": cleaned_data.get("rating"),
-        "visited": cleaned_data.get("visited", False) #In case it will be empty, it will print "False"
+        "visited": cleaned_data.get("visited", False), #In case it will be empty, it will print "False"
+        "image_url": cleaned_data.get('image_url', '')
     }
     
     #Check if the city alredy exist
@@ -44,6 +45,8 @@ def add_location():
     #The inject to mongo
     result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
     return jsonify({"msg": "Location added successfully", "id": str(result.inserted_id)}), 201
+
+
 #!===========================================
 @locations_bp.route("/all", methods=["GET"])
 def get_all_locations():

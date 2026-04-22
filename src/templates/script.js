@@ -72,15 +72,19 @@ document.getElementById('filter-rating').onchange = applyFilters;
 function displayLocations(locations) {
     const container = document.getElementById('locations-container');
     container.innerHTML = '';
+
     locations.forEach(loc => {
         const card = document.createElement('div');
         card.className = 'location-card';
         card.onclick = () => showDetails(loc);
         
-        const imgUrl = (loc.image_url && loc.image_url.trim() !== "") ? loc.image_url : "https://via.placeholder.com/400x250?text=No+Image+Added";
+        const searchQuery = `${loc.name} ${loc.city} Japan`.replace(/\s+/g, ',');
+        const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
+            ? loc.image_url 
+            : `https://loremflickr.com/800/600/${searchQuery}/all`;
         
         card.innerHTML = `
-            <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://via.placeholder.com/400x250?text=Image+Error'">
+            <img src="${imgUrl}" class="card-img-mini" onerror="this.src='https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800'">
             <div class="card-text">
                 <h3 style="color:#bc002d;">${loc.name}</h3>
                 <p style="font-size:0.9rem; color:#888;">📍 ${loc.city} | ${loc.category || 'General'}</p>
@@ -93,17 +97,23 @@ function displayLocations(locations) {
 
 function showDetails(loc) {
     const body = document.getElementById('details-body');
-    const imgUrl = (loc.image_url && loc.image_url.trim() !== "") ? loc.image_url : "https://via.placeholder.com/400x250?text=No+Image+Added";
+    
+    const searchQuery = `${loc.name} ${loc.city} Japan`.replace(/\s+/g, ',');
+    const imgUrl = (loc.image_url && loc.image_url.trim() !== "") 
+        ? loc.image_url 
+        : `https://loremflickr.com/800/600/${searchQuery}/all`;
 
     const mapQuery = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
-    const googleMapsLink = (loc.map_url && loc.map_url.startsWith('http')) ? loc.map_url : `https://www.google.com/maps/search/${mapQuery}`;
+    const googleMapsLink = (loc.map_url && loc.map_url.startsWith('http')) 
+        ? loc.map_url 
+        : `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
     body.innerHTML = `
-        <img src="${imgUrl}" style="width:100%; border-radius:15px; margin-bottom:15px; max-height:300px; object-fit:cover;">
+        <img src="${imgUrl}" style="width:100%; border-radius:15px; margin-bottom:15px; max-height:350px; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800'">
         <h2 style="color:#bc002d;">${loc.name}</h2>
         <p><strong>City:</strong> ${loc.city} | <strong>Category:</strong> ${loc.category || 'General'}</p>
         <div class="star-rating">${"★".repeat(loc.rating || 5)}${"☆".repeat(5-(loc.rating || 5))}</div>
-        <p style="margin:15px 0;">${loc.description || 'No description provided.'}</p>
+        <p style="margin:15px 0; line-height:1.8;">${loc.description || 'No description provided.'}</p>
         <a href="${googleMapsLink}" target="_blank" class="nav-link-btn">📍 View on Google Maps</a>
     `;
     detailsModal.style.display = "block";
@@ -121,7 +131,7 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
         map_url: document.getElementById('map_url').value,
         visited: true
     };
-    const res = await fetch('http://127.0.0.1:5000/locations/add', {
+    const res = await fetch('http://127.0.0x.1:5000/locations/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLoc)
