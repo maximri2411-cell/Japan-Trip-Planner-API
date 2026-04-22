@@ -13,22 +13,26 @@ document.querySelector(".close-modal").onclick = () => {
 
 
 // ============================================
-document.querySelector(".close-details").onclick = () => detailsModal.style.display = "none";
+document.querySelector(".close-details").onclick = () =>
+    detailsModal.style.display = "none";
 // ============================================
 
 
 // ============================================
-document.getElementById("open-modal-btn").onclick = () => addModal.style.display = "block";
+document.getElementById("open-modal-btn").onclick = () =>
+    addModal.style.display = "block";
 // ============================================
 
 
  // ============================================
-document.getElementById('explore-btn').onclick = () => document.getElementById('locations-grid').scrollIntoView({ behavior: 'smooth' });
+document.getElementById('explore-btn').onclick = () => 
+    document.getElementById('locations-section').scrollIntoView({ behavior: 'smooth' });
 // ============================================
 
 
 // ============================================
-document.getElementById('tips-btn').onclick = () => document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
+document.getElementById('tips-btn').onclick = () =>
+    document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
  // ============================================
 
 window.onclick = (e) => {
@@ -276,17 +280,21 @@ async function showDetails(loc) {
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Submit button pressed") // Check if the button is respose 
+
     // Data gather
     const newLoc = {
         name: document.getElementById('name').value,
         city: document.getElementById('city').value,
-        category: document.getElementById('category').value,
+        category: document.getElementById('category') ? document.getElementById('category').value : "General",
         rating: parseInt(document.getElementById('rating').value) || 5,
         image_url: document.getElementById('image_url').value,
         description: document.getElementById('description').value,
         map_url: document.getElementById('map_url').value,
         visited: true
     };
+
+    console.log("Sending data:", newLoc);
 
     try {
     const res = await fetch('http://127.0.0.1:5000/locations/add', {
@@ -299,12 +307,14 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
             alert("Location added successfully!"); // visual message of success
             addModal.style.display = "none";
             document.getElementById('add-location-form').reset(); // Clean the fileds
-            fetchLocations(); // Refresh
+            await fetchLocations(); // Refresh
         } else {
-            alert("Error: Could not save location.");
+            const errorData = await res.json();
+            alert("Server error: " + (errorData.error || "Unknown error"));
         }
     } catch (err) {
-        console.error("Fetch error:", err);
+        console.error("Connection error:", err);
+        alert("Could not connect to the server, check your flask");
     }
 };
 // ============================================
