@@ -87,6 +87,7 @@ def get_all_locations():
             "rating": loc.get("rating"),
             "visited": loc.get("visited"),
             "map_url": loc.get("map_url"), #This is to let the customer put the exact location if he has
+            "image_url": loc.get("image_url", ""),
             "_id": str(loc.get("_id")) #conversion from objectid to string
         }
         final_ordered_list.append(ordered_loc)
