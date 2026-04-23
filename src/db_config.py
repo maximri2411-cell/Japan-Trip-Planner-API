@@ -11,10 +11,14 @@ mongo_uri = os.getenv("MONGO_URI")
 #Create client and its the main pipe for the app to talk with mongo server
 client = MongoClient(mongo_uri)
 
-#Connecting to the data base inside the server that we called "japan strip"
-db = client["japan_trip"]
+#Connecting to the data base with environment-aware name
+default_db_name = "japan_trip"
+db_name = os.getenv("MONGO_DB_NAME", default_db_name)
+
+if os.getenv("TESTING", "").lower() == "true":
+    db_name = os.getenv("TEST_MONGO_DB_NAME", "japan_trip_test")
+
+db = client[db_name]
 
 #went to the table "Collection" specific inside data base were we keep our locations
 locations_collection = db["locations"]
-
-# food = db["food"]

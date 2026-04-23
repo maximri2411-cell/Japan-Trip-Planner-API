@@ -1,24 +1,33 @@
-# 🇯🇵 Japan Trip Planner API
+🇯🇵 Beyond Tokyo | Full-Stack Japan Explorer
+Beyond Tokyo is a full-stack web application designed to manage and discover travel destinations across Japan. This project demonstrates a complete end-to-end development process, from NoSQL data management to a dynamic, secure user interface.
 
-## 📝 About the Project
-This project is a personal Backend API inspired by my big trip to Japan. 
-Instead of a generic To-Do list, I built a system to manage travel recommendations, 
-places to visit, and personal ratings of my favorite spots in Japan.
+🎯 Key Features
+Full CRUD Management: Seamless data handling with MongoDB Atlas.
 
-## 🚀 Tech Stack
-- **Backend:** Python & Flask
-- **Database:** MongoDB Atlas (NoSQL)
-- **Tools:** Postman, Git, Venv
+Data Security: Implemented a Backend Proxy to hide sensitive API keys (Pexels) from the client-side.
 
-## 🛠️ Features (In Development)
-- Add new locations in Japan (POST)
-- View all saved destinations (GET)
-- Filter spots by City or Category (GET)
-- Mark places as "Visited"
+Dynamic UX: Real-time filtering by City/Category and a custom Dark Mode toggle using CSS variables.
 
-## 💻 Setup
-1. Clone the repo: `git clone [YOUR_REPO_URL]`
-2. Create venv: `python -m venv venv`
-3. Activate venv: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
-4. Install requirements: `pip install -r requirements.txt`
-5. Run the app: `python app.py`
+API Automation: Automated image fetching based on location names to enhance the visual experience.
+
+🛠️ Tech Stack
+Server: Python (Flask)
+
+Database: MongoDB Atlas
+
+Frontend: JavaScript (ES6+), CSS3 (Flex/Grid), HTML5
+
+APIs: Pexels API, Google Maps
+
+🚀 Quick Setup
+Install dependencies: pip install -r requirements.txt
+
+Environment Variables: Create a .env file with MONGO_URI and PEXELS_API_KEY.
+
+Run the app: python app.py
+
+💡 Technical Highlight: Secure API Proxy
+A core challenge was utilizing external APIs without exposing credentials. I solved this by creating a Flask bridge route. This architecture ensures that environment variables are strictly accessed server-side, keeping the application secure and production-ready.
+
+💬 Feedback & Contributions
+I am always looking to improve! If you have any suggestions, performance optimizations, or clean-code recommendations, feel free to open an issue or submit a pull request. Feedback on the API architecture or the Frontend logic is highly appreciated.

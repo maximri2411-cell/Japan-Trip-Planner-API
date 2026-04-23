@@ -1,11 +1,4 @@
-let PEXELS_API_KEY = "";
 const imageCache = {};
-
-async function loadConfig() {
-    const res = await fetch("http://127.0.0.1:5000/config");
-    const data = await res.json();
-    PEXELS_API_KEY = data.pexels_key;
-}
 
 
 
@@ -118,9 +111,7 @@ async function getSmartImageUrl(loc) {
  
     try {
         const query = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
-        const response = await fetch(`https://api.pexels.com/v1/search?query=${query}&per_page=1`, {
-            headers: { Authorization: PEXELS_API_KEY }
-        });
+        const response = await fetch(`http://127.0.0.1:5000/pexels/search?query=${query}&per_page=1`);
         const data = await response.json();
  
         if (data.photos && data.photos.length > 0) {
@@ -365,6 +356,5 @@ if (localStorage.getItem('theme') === 'dark') {
 
 // Active the main function in realoading page
 window.onload = async () => {
-    await loadConfig();
     await fetchLocations();
 };

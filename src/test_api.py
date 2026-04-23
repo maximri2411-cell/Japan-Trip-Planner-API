@@ -1,6 +1,13 @@
 import pytest
-from app import app
 import time
+import os
+
+# Force a dedicated DB for tests before importing app/db modules
+os.environ["TESTING"] = "true"
+os.environ.setdefault("TEST_MONGO_DB_NAME", "japan_trip_test")
+
+from app import app
+from db_config import locations_collection
 
 #This thing help us to "active" the server without even touch him
 @pytest.fixture
@@ -8,6 +15,12 @@ def client():
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
+
+@pytest.fixture(autouse=True)
+def clean_test_db():
+    locations_collection.delete_many({})
+    yield
+    locations_collection.delete_many({})
 
 #Test to check if the data is pulled well
 def test_get_all_locations(client):
@@ -48,6 +61,3 @@ def test_get_all_locations_content(client):
         assert "name" in first_location
         assert "city" in first_location
         #Here we check that the important fields exist in the first data poiubts to the screen
-        
-        
-#assert - the name we use to run the tests

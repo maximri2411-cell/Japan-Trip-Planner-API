@@ -1,19 +1,26 @@
-import json
 from flask import Blueprint, request, jsonify, abort
 from db_config import locations_collection
-from bson import json_util
 from models import validate_location_data, validate_partial_data
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
+from pymongo.errors import PyMongoError
 
 #Creating an extension with the name 'locations'
 #Allows us to organize the paths in a separate file from the main app
 locations_bp = Blueprint("locations", __name__)
 
 
+def _get_json_body():
+    raw_data = request.get_json(silent=True)
+    if not isinstance(raw_data, dict):
+        abort(400, description="Request body must be a valid JSON object")
+    return raw_data
+
+
 #!===========================================
 @locations_bp.route("/add", methods=["POST"])
 def add_location():
-    raw_data = request.json #Takes the data that send from body in postman
+    raw_data = _get_json_body() #Takes the data that send from body in postman
     
     #Validation send the data for test in models and gets back clean data or errors
     cleaned_data, validation_errors = validate_location_data(raw_data)
@@ -43,7 +50,11 @@ def add_location():
         abort(409, description="This location already exists in your trip list")
     
     #The inject to mongo
-    result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
+    try:
+        result = locations_collection.insert_one(formatted_data) #If everthing is ok, we put in mongo the clean stats
+    except PyMongoError:
+        abort(500, description="Database insert failed")
+
     return jsonify({"msg": "Location added successfully", "id": str(result.inserted_id)}), 201
 
 
@@ -114,8 +125,10 @@ def get_location_by_id(location_id):
         else:
             abort(404)
             
-    except Exception:
+    except InvalidId:
         abort(400, description="Invalid ID format")
+    except PyMongoError:
+        abort(500, description="Database read failed")
 
 
 #!===========================================
@@ -132,15 +145,17 @@ def delete_location(location_id):
             abort(404)
             
     #If the id is not with the acceptble format
-    except Exception:
+    except InvalidId:
         abort(400, description="Invalid ID format")
+    except PyMongoError:
+        abort(500, description="Database delete failed")
     
     
 #!===========================================
 @locations_bp.route("/update/<location_id>", methods=["PATCH"])
 def update_location(location_id):
     
-    raw_updates = request.json
+    raw_updates = _get_json_body()
     
     #Checkin only the fileds that has been send to update
     cleaned_updates, validation_errors = validate_partial_data(raw_updates)
@@ -164,8 +179,10 @@ def update_location(location_id):
             "modified_fields": result.modified_count #Return only what has been changed
         }), 200
 
-    except Exception: #The message od error
-        abort(400, description="Invalid ID format or update failed")
+    except InvalidId: #The message od error
+        abort(400, description="Invalid ID format")
+    except PyMongoError:
+        abort(500, description="Database update failed")
     
     
 #!===========================================
@@ -173,7 +190,7 @@ def update_location(location_id):
 def replace_location(location_id):
     
     #Getting the new data that replace the old one
-    raw_data = request.json
+    raw_data = _get_json_body()
     
     #Secured valitation like in post
     cleaned_data, validation_errors = validate_location_data(raw_data)
@@ -196,8 +213,10 @@ def replace_location(location_id):
             "modified_count": result.modified_count
         }), 200
 
-    except Exception:
-        abort(400, description="Invalid ID format or replace failed")
+    except InvalidId:
+        abort(400, description="Invalid ID format")
+    except PyMongoError:
+        abort(500, description="Database replace failed")
     
     
 #!===========================================
