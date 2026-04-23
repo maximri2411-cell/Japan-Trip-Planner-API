@@ -22,6 +22,10 @@ app.register_blueprint(locations_bp, url_prefix="/locations")
 def home():
         return render_template("index.html")
 
+@app.route("/config")
+def config():
+    return {"pexels_key": os.getenv("PEXELS_API_KEY")}
+
 #Checks whether we ran the file directly (and not imported it) and if so - runs the server in test mode - debug
 if __name__ == "__main__":
     app.run(debug=True)

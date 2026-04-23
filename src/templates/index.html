@@ -1,23 +1,28 @@
 <!DOCTYPE html>
+
+<!-- Name of the web -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japan Trip | My Journey</title>
+    <title>Japan Trip</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
+  
+    
+<!-- Main title -->
 <header class="hero">
     <div class="hero-overlay">
         <div class="hero-content">
             <h1 class="main-title">BEYOND TOKYO 🇯🇵</h1>
-            
+            <!-- Text box -->
             <div class="intro-box">
                 <p><strong>Your personal gateway to Japan. Browse top-rated locations, filter by city or category, and get instant access to maps and details. Designed for travelers who want to explore Japan beyond the tourist trails and create a custom travel experience that fits their unique style</strong></p>
             </div>
-
+            <!-- Buttons for menus & dark/light mode-->
             <div class="hero-btn-container">
                 <button id="explore-btn" class="hero-btn">Start Exploring</button>
                 <button id="tips-btn" class="hero-btn">Tools & Tips</button>
@@ -27,8 +32,10 @@
     </div>
 </header>
 
+
+
+<!-- All of the cards and links to webbs -->
 <main class="container">
-    
     <section id="tips-section" class="tips-container">
         <h2 class="section-title">Travel Tips & Tools 🗺️</h2>
         <div class="grid">
@@ -82,15 +89,20 @@
         </div>
     </section>
 
+
+
+    <!-- Title of the locations menu -->
     <section id="locations-section" class="filter-section">
         <h2 class="section-title">Plan Your Adventure ⛩️</h2>
+
+
 
         <!--Search bar -->
         <div style="text-align:center; margin-bottom: 20px;">
             <input 
                 type="text" 
                 id="search-input" 
-                placeholder="🔍 Search by name or city..." 
+                placeholder="🔍 Search by city..." 
                 style="
                     width: 100%;
                     max-width: 500px;
@@ -105,7 +117,9 @@
             >
         </div>
 
-        <!--Filters -->
+
+
+        <!-- Filters -->
         <div class="filters-dashboard">
             <div class="filter-box">
                 <label>City</label>
@@ -136,6 +150,8 @@
                 </select>
             </div>
 
+
+
             <!-- Sort -->
             <div class="filter-box">
                 <label>Sort By</label>
@@ -151,6 +167,8 @@
         
         <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
     </section>
+
+
 
     <!-- Spinner -->
     <div id="spinner" style="
@@ -169,7 +187,6 @@
             animation: spin 0.8s linear infinite;
         "></div>
     </div>
-
     <!-- Add spinner animation to page -->
     <style>
         @keyframes spin {
@@ -178,6 +195,8 @@
     </style>
 
 
+
+    <!-- Add new location platform -->
     <div id="location-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>

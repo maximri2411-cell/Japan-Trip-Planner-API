@@ -1,24 +1,69 @@
+/* Global values - allows change color in all over the webb */
 :root {
-    --japan-red: #bc002d;
-    --dark-grey: #333;
-    --light-bg: #f8f9fa;
-    --modal-bg: rgba(0, 0, 0, 0.85);
-    --neon-red: #ff003c;
-    --neon-glow: rgba(255, 0, 60, 0.4); 
+    --japan-red: #bc002d; /* Red of japan */
+    --dark-grey: #333;    /* Grey of text */
+    --light-bg: #f8f9fa;  /* background color nice and clean */
+    --modal-bg: rgba(0, 0, 0, 0.85); /* background for jumping windows */
+    --neon-red: #ff003c;  /* Neon color for dark mode */
+    --neon-glow: rgba(255, 0, 60, 0.4);  /* Aura of neon */
 }
 
+
+
+/* Reset browser default settings */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
 body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); color: var(--dark-grey); line-height: 1.6; }
 
+
+
 /* Hero Section */
-.hero { height: 85vh; background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; }
-.hero-overlay { background: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-.hero-content { text-align: center; color: white; padding: 20px; }
-.main-title { font-size: 4rem; color: white !important; letter-spacing: 5px; margin-bottom: 15px; text-shadow: 2px 2px 15px rgba(0,0,0,0.6); }
+.hero { 
+    height: 85vh; /* Takes 85% height from top of the screen */
+    background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover; /* The pic covers all of the space */
+    background-position: center;
+}
 
-.intro-box { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; max-width: 700px; margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.2); direction: rtl; }
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%; height: 100%;
+    display: flex; align-items: center;
+    justify-content: center;
+}
 
-.hero-btn-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.hero-content {
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.main-title {
+    font-size: 4rem;
+    color: white !important;
+    letter-spacing: 5px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 15px rgba(0,0,0,0.6);
+}
+
+.intro-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 700px;
+    margin: 0 auto 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    direction: rtl;
+}
+
+.hero-btn-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .hero-btn, .weather-link { 
     width: 180px; 
     height: 50px; 
@@ -35,7 +80,11 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     text-decoration: none; 
     font-size: 16px;
 }
-.hero-btn:hover, .weather-link:hover { background: var(--japan-red); border-color: var(--japan-red); }
+
+.hero-btn:hover, .weather-link:hover {
+    background: var(--japan-red);
+    border-color: var(--japan-red);
+}
 
 .tips-container { 
     background: white; 
@@ -47,7 +96,13 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--light-bg); co
     margin-bottom: 50px; 
     text-align: center; 
 }
-.section-title { color: var(--japan-red); margin-bottom: 30px; width: 100%; text-align: center; display: block;}
+.section-title {
+    color: var(--japan-red);
+    margin-bottom: 30px;
+    width: 100%;
+    text-align: center;
+    display: block;
+}
 
 .filters-dashboard {
     display: flex;
@@ -151,10 +206,30 @@ body.dark-mode .custom-select:hover {
     transform: scale(1.02);
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-.location-card { background: white; border-radius: 15px; border: 1px solid #eee; transition: 0.3s; overflow: hidden; cursor: pointer; }
-.location-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.location-card {
+    background: white;
+    border-radius: 15px;
+    border: 1px solid #eee; transition: 0.3s;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.location-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+}
 
 .card-img-mini { 
     width: 100%; 
@@ -166,6 +241,7 @@ body.dark-mode .custom-select:hover {
 }
 
 .card-text { padding: 20px; }
+
 .star-rating { color: #f4c542; font-size: 1.2rem; }
 
 #submit-btn {
@@ -195,9 +271,29 @@ body.dark-mode .custom-select:hover {
     transform: translateY(0);
 }
 
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: var(--modal-bg); backdrop-filter: blur(8px); }
-.modal-content { background: white; margin: 5vh auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; position: relative; text-align: center; margin-bottom: 25px;}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--modal-bg);
+    backdrop-filter: blur(8px);
+}
 
+.modal-content {
+    background: white;
+    margin: 5vh auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    text-align: center;
+    margin-bottom: 25px;
+}
 
 /* //////////////////////////////////////*/
 /* Close button in the card of locations */
@@ -218,6 +314,7 @@ body.dark-mode .custom-select:hover {
     border-radius: 50%;
     line-height: 1;
 }
+
 .close-modal:hover, .close-details:hover {
     background: var(--japan-red);
 }
@@ -274,10 +371,7 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; bo
 }
 
 
-
-
-
-
+/* //////////////////////////////////////*/
 /* Dark mode */
 body.dark-mode {
     background-color: #0d0d0f !important;
@@ -342,3 +436,4 @@ body.dark-mode .mode-switch:hover {
     border-color: var(--japan-red);
     box-shadow: 0 0 15px var(--japan-red);
 }
+/* //////////////////////////////////////*/

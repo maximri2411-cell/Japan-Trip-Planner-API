@@ -1,50 +1,67 @@
+let PEXELS_API_KEY = "";
+const imageCache = {};
+
+async function loadConfig() {
+    const res = await fetch("http://127.0.0.1:5000/config");
+    const data = await res.json();
+    PEXELS_API_KEY = data.pexels_key;
+}
+
+
+
+// This is goin to keep all the data that will came from the server
 let allLocations = [];
- 
+// ============================================
+
+
+// Pulling off elements of models like jumping windos frome html
 const addModal = document.getElementById("location-modal");
 const detailsModal = document.getElementById("details-modal");
  
 
 // ============================================
+// The X button to close windows
+
 document.querySelector(".close-modal").onclick = () => {
     addModal.style.display = "none";
-    document.getElementById('add-location-form').reset(); // Clean in the exit
+    document.getElementById('add-location-form').reset(); // Clean in the exit // Clean fields in the exit
 };
-// ============================================
 
-
-// ============================================
 document.querySelector(".close-details").onclick = () =>
     detailsModal.style.display = "none";
 // ============================================
 
 
 // ============================================
+// Opening model of adding new place
+
 document.getElementById("open-modal-btn").onclick = () =>
     addModal.style.display = "block";
 // ============================================
 
 
- // ============================================
+// ============================================
+// Smooth scroll in hero section 
+
 document.getElementById('explore-btn').onclick = () => 
     document.getElementById('locations-section').scrollIntoView({ behavior: 'smooth' });
-// ============================================
 
-
-// ============================================
 document.getElementById('tips-btn').onclick = () =>
     document.getElementById('tips-section').scrollIntoView({ behavior: 'smooth' });
- // ============================================
+// ============================================
+
+// ============================================
+// Closing model by pressing outside the window
 
 window.onclick = (e) => {
     if (e.target == addModal) addModal.style.display = "none";
     if (e.target == detailsModal) detailsModal.style.display = "none";
 }
- 
+// ============================================
+
 
 // ============================================
-// PEXELS key
-const PEXELS_API_KEY = 'jI8g2v4Sj9Ysf0UvLzr0Nvy2xKKeFRtke4oKKBGL2mnOe1oopDxXELrU';
-const imageCache = {};
+// PEXELS key - auto bring pict
 // ============================================
 
 
@@ -57,7 +74,7 @@ document.getElementById('search-input').addEventListener('input', () => {
         loc.name.toLowerCase().includes(query) ||
         loc.city.toLowerCase().includes(query)
     );
-    displayLocations(filtered);
+    displayLocations(filtered); // New presentation of the filtered cards
 });
 // ============================================
 
@@ -67,7 +84,7 @@ document.getElementById('search-input').addEventListener('input', () => {
 
 document.getElementById('sort-select').addEventListener('change', () => {
     const sortVal = document.getElementById('sort-select').value;
-    let sorted = [...allLocations];
+    let sorted = [...allLocations]; // Creating new copy in order not destroy the original
 
     if (sortVal === 'rating-desc') sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     if (sortVal === 'rating-asc') sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
@@ -82,18 +99,14 @@ document.getElementById('sort-select').addEventListener('change', () => {
 // ============================================
 // Spinners helpers
 
-function showSpinner() {
-    document.getElementById('spinner').style.display = 'flex';
-}
+function showSpinner() { document.getElementById('spinner').style.display = 'flex'; }
 
-function hideSpinner() {
-    document.getElementById('spinner').style.display = 'none';
-}
+function hideSpinner() { document.getElementById('spinner').style.display = 'none'; }
 // ============================================
 
 
 // ============================================
-// PEXELS image
+// Smart search - first in DB and if it dosent have, then goes to PEXELS
 
 async function getSmartImageUrl(loc) {
     if (!loc) return 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80';
@@ -101,7 +114,7 @@ async function getSmartImageUrl(loc) {
     if (loc.image_url && loc.image_url.trim() !== "") return loc.image_url;
  
     const cacheKey = `${loc.name}-${loc.city}`;
-    if (imageCache[cacheKey]) return imageCache[cacheKey];
+    if (imageCache[cacheKey]) return imageCache[cacheKey]; // Check in stored memory
  
     try {
         const query = encodeURIComponent(`${loc.name} ${loc.city} Japan`);
@@ -125,14 +138,14 @@ async function getSmartImageUrl(loc) {
 
 
 // ============================================
-// Fetch from backend
+// Fetch from backend first
 
 async function fetchLocations() {
     showSpinner();
     try {
         const response = await fetch('http://127.0.0.1:5000/locations/all');
         allLocations = await response.json();
-        updateDynamicFilters();
+        updateDynamicFilters(); // Update the city list and Categories
         await displayLocations(allLocations);
     } catch (error) {
         console.error("Error fetching locations");
@@ -149,10 +162,12 @@ async function fetchLocations() {
 function updateDynamicFilters() {
     const citySelect = document.getElementById('filter-city');
     const categorySelect = document.getElementById('filter-category');
- 
+    
+    // Set of uniq city and category
     const cities = [...new Set(allLocations.map(l => l.city).filter(c => c))];
     const categories = [...new Set(allLocations.map(l => l.category).filter(cat => cat))];
- 
+    
+    // Empty and fill new options to pick 
     citySelect.innerHTML = '<option value="all">All Cities</option>';
     cities.forEach(city => {
         const opt = document.createElement('option');
@@ -161,6 +176,7 @@ function updateDynamicFilters() {
         citySelect.appendChild(opt);
     });
  
+    // And same on category
     categorySelect.innerHTML = '<option value="all">All Categories</option>';
     categories.forEach(cat => {
         const opt = document.createElement('option');
@@ -173,7 +189,7 @@ function updateDynamicFilters() {
 
 
 // ============================================
-// Apply filters
+// Apply filters (Query parameters)
 
 async function applyFilters() {
     const city = document.getElementById('filter-city').value;
@@ -192,9 +208,7 @@ async function applyFilters() {
         await displayLocations(filteredData);
     } catch (error) {
         console.error("Filter error:", error);
-    } finally {
-        hideSpinner();
-    }
+    } finally { hideSpinner(); }
 }
 // ============================================
 
@@ -204,7 +218,7 @@ document.getElementById('filter-category').onchange = applyFilters;
 document.getElementById('filter-rating').onchange = applyFilters;
 
 // ============================================
-// Display cards
+// Build data cards and input to html (DOM Manipulation)
 
 async function displayLocations(locations) {
     const container = document.getElementById('locations-container');
@@ -230,7 +244,7 @@ async function displayLocations(locations) {
     for (const loc of locations) {
         const card = document.createElement('div');
         card.className = 'location-card';
-        card.onclick = () => showDetails(loc);
+        card.onclick = () => showDetails(loc); // PResing it Opening details model
  
         const imgUrl = await getSmartImageUrl(loc);
  
@@ -249,7 +263,7 @@ async function displayLocations(locations) {
 
 
 // ============================================
-// Shoe details model
+// Show specific details model
 
 async function showDetails(loc) {
     const body = document.getElementById('details-body');
@@ -275,7 +289,7 @@ async function showDetails(loc) {
 
 
 // ============================================
-// Add new location
+// Add new location POST
 
 document.getElementById('add-location-form').onsubmit = async (e) => {
     e.preventDefault();
@@ -300,7 +314,7 @@ document.getElementById('add-location-form').onsubmit = async (e) => {
     const res = await fetch('http://127.0.0.1:5000/locations/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newLoc)
+        body: JSON.stringify(newLoc) // The object is turning to json for the server
     });
 
     if (res.ok) {
@@ -336,7 +350,12 @@ darkModeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
     }
 });
- 
+// ============================================
+
+
+// ============================================
+// Check if the user used the dark mode last time been in the webb
+
 if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-mode');
     darkModeToggle.innerHTML = "Light Mode";
@@ -344,5 +363,8 @@ if (localStorage.getItem('theme') === 'dark') {
 // ============================================
  
 
-
-window.onload = fetchLocations;
+// Active the main function in realoading page
+window.onload = async () => {
+    await loadConfig();
+    await fetchLocations();
+};
