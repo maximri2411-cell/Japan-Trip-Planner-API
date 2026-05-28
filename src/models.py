@@ -2,7 +2,7 @@ def validate_location_data(data):
     errors = []
 
     #This is for cleaning spaces in case there are from the input of the customer
-    text_fields = ["city", "name", "category", "description"]
+    text_fields = ["city", "name", "category", "description", "map_url"]
     for field in text_fields:
         if field in data and isinstance(data[field], str):
             value = data[field].strip() # #Cleaning spacec
@@ -68,6 +68,15 @@ def validate_partial_data(data): #This is made for patch
                 data[field] = data[field].strip()
                 if not data[field]: 
                     errors.append(f"Field '{field}' cannot be empty")
+            else:
+                errors.append(f"Field '{field}' must be a string")
+
+    #Checking optional text fields
+    optional_fields = ["map_url", "description", "image_url"]
+    for field in optional_fields:
+        if field in data:
+            if isinstance(data[field], str):
+                data[field] = data[field].strip()
             else:
                 errors.append(f"Field '{field}' must be a string")
 

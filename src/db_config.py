@@ -8,6 +8,12 @@ load_dotenv()
 #Bring the address connaction to mongo
 mongo_uri = os.getenv("MONGO_URI")
 
+# Fallback to local MongoDB configuration if no URI is provided in env
+if not mongo_uri:
+    mongo_host = os.getenv("MONGO_HOST", "localhost")
+    mongo_port = os.getenv("MONGO_PORT", "27017")
+    mongo_uri = f"mongodb://{mongo_host}:{mongo_port}/"
+
 #Create client and its the main pipe for the app to talk with mongo server
 client = MongoClient(mongo_uri)
 

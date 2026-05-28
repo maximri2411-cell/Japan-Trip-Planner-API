@@ -36,7 +36,8 @@ def add_location():
         "category": cleaned_data.get("category"),
         "rating": cleaned_data.get("rating"),
         "visited": cleaned_data.get("visited", False), #In case it will be empty, it will print "False"
-        "image_url": cleaned_data.get('image_url', '')
+        "image_url": cleaned_data.get('image_url', ''),
+        "map_url": cleaned_data.get('map_url', '')
     }
     
     #Check if the city alredy exist
