@@ -46,6 +46,11 @@ def pexels_search():
         return jsonify(pexels_response.json()), pexels_response.status_code
     except requests.RequestException:
         return jsonify({"error": "Could not reach Pexels service"}), 502
+    
+# This is the endpoint for K8 / Health checks for tha app it self
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy"})
 
 #Checks whether we ran the file directly (and not imported it) and if so - runs the server in test mode - debug
 if __name__ == "__main__":
