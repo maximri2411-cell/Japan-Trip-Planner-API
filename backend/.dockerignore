@@ -1,0 +1,11 @@
+__pycache__
+*.pyc
+*.pyo
+.env
+.git
+.gitignore
+*.md
+venv/
+.venv/
+
+# All of the things we dont want to be included in the image

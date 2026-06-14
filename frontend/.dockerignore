@@ -1,0 +1,6 @@
+.git
+.gitignore
+*.md
+node_modules/
+
+# All of the things we dont want to be included in the image
