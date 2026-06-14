@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<!-- Name of the web -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan Trip</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  
+    
+<!-- Main title -->
+<header class="hero">
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <h1 class="main-title">BEYOND TOKYO 🇯🇵</h1>
+            <!-- Text box -->
+            <div class="intro-box">
+                <p><strong>Your personal gateway to Japan. Browse top-rated locations, filter by city or category, and get instant access to maps and details. Designed for travelers who want to explore Japan beyond the tourist trails and create a custom travel experience that fits their unique style</strong></p>
+            </div>
+            <!-- Buttons for menus & dark/light mode-->
+            <div class="hero-btn-container">
+                <button id="explore-btn" class="hero-btn">Start Exploring</button>
+                <button id="tips-btn" class="hero-btn">Tools & Tips</button>
+                <button id="dark-mode-toggle" class="mode-switch">Dark Mode</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- All of the cards and links to webbs -->
+<main class="container">
+    <section id="tips-section" class="tips-container">
+        <h2 class="section-title">Travel Tips & Tools 🗺️</h2>
+        <div class="grid">
+            <div class="tool-card">
+                <h3>Currency 💴</h3>
+                <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=ILS&To=JPY" target="_blank" class="nav-link-btn">Converter</a>
+            </div>
+            <div class="tool-card">
+                <h3>Translate 🉐</h3>
+                <a href="https://translate.google.com/?sl=iw&tl=ja" target="_blank" class="nav-link-btn">Translate</a>
+            </div>
+            <div class="tool-card">
+                <h3>Weather ☀️</h3>
+                <a href="https://www.accuweather.com/en/jp/japan-weather" target="_blank" class="nav-link-btn red-btn">Check Forecast</a>
+            </div>
+            <div class="tool-card">
+                <h3>Hotels & Hostels 🏢</h3>
+                <a href="https://www.booking.com/country/jp.html" target="_blank" class="nav-link-btn orange-btn">Bookings</a>
+            </div>
+            <div class="tool-card">
+                <h3>Attractions 🎟️</h3>
+                <a href="https://www.getyourguide.com" target="_blank" class="nav-link-btn red-btn">Get Your Guide</a>
+            </div>
+            <div class="tool-card">
+                <h3>Flights ✈️</h3>
+                <a href="https://booking.kayak.com" target="_blank" class="nav-link-btn red-btn">Book a flight</a>
+            </div>
+            <div class="tool-card">
+                <h3>Videos 📹</h3>
+                <a href="https://www.youtube.com/@hoangpham" target="_blank" class="nav-link-btn red-btn">Youtube</a>
+            </div>
+            <div class="tool-card app-hub ios">
+                <h3>iPhone Apps 🍎</h3>
+                <div class="app-links">
+                    <a href="https://apps.apple.com/app/google-maps/id585027354" target="_blank">Maps</a>
+                    <a href="https://apps.apple.com/app/suica/id1256795493" target="_blank">Suica</a>
+                    <a href="https://apps.apple.com/app/getyourguide/id412781441" target="_blank">GYG</a>
+                    <a href="https://apps.apple.com/us/app/mymizu/id1480535233" target="_blank">Mymizu</a>
+                    <a href="https://apps.apple.com/il/app/currency-converter-easy/id1038563997" target="_blank">Converter</a>
+                    <a href="https://apps.apple.com/il/app/naver-papago-ai-translator/id1147874819" target="_blank">Translate</a>
+                </div>
+            </div>
+            <div class="tool-card app-hub android">
+                <h3>Android Apps 🤖</h3>
+                <div class="app-links">
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.maps" target="_blank">Maps</a>
+                    <a href="https://play.google.com/store/apps/details?id=jp.co.jreast.mobilesuica" target="_blank">Suica</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.getyourguide.android" target="_blank">GYG</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Title of the locations menu -->
+    <section id="locations-section" class="filter-section">
+        <h2 class="section-title">Plan Your Adventure ⛩️</h2>
+
+
+
+        <!--Search bar -->
+        <div style="text-align:center; margin-bottom: 20px;">
+            <input 
+                type="text" 
+                id="search-input" 
+                placeholder="🔍 Search by city..." 
+                style="
+                    width: 100%;
+                    max-width: 500px;
+                    padding: 14px 20px;
+                    border-radius: 50px;
+                    border: 1px solid #ddd;
+                    font-size: 1rem;
+                    font-family: 'Poppins', sans-serif;
+                    outline: none;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+                "
+            >
+        </div>
+
+
+
+        <!-- Filters -->
+        <div class="filters-dashboard">
+            <div class="filter-box">
+                <label>City</label>
+                <select id="filter-city" class="custom-select">
+                    <option value="all">All Cities</option>
+                </select>
+            </div>
+            <div class="filter-box">
+                <label>Category</label>
+                <select id="filter-category" class="custom-select">
+                    <option value="all">All Categories</option>
+                    <option value="Food">Food & Drinks</option>
+                    <option value="Culture">Culture & Temples</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Nature">Nature</option>
+                    <option value="General">General</option>
+                </select>
+            </div>
+            <div class="filter-box">
+                <label>Min Rating</label>
+                <select id="filter-rating" class="custom-select">
+                    <option value="0">All Ratings</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4+)</option>
+                    <option value="3">⭐⭐⭐ (3+)</option>
+                    <option value="2">⭐⭐ (2+)</option>
+                    <option value="1">⭐ (1+)</option>
+                </select>
+            </div>
+
+
+
+            <!-- Sort -->
+            <div class="filter-box">
+                <label>Sort By</label>
+                <select id="sort-select" class="custom-select">
+                    <option value="default">Default</option>
+                    <option value="rating-desc">⭐ Rating: High to Low</option>
+                    <option value="rating-asc">⭐ Rating: Low to High</option>
+                    <option value="name-asc">🔤 Name: A → Z</option>
+                    <option value="city-asc">📍 City: A → Z</option>
+                </select>
+            </div>
+        </div>
+        
+        <button id="open-modal-btn" class="add-main-btn">+ Add New Experience</button>
+    </section>
+
+
+
+    <!-- Spinner -->
+    <div id="spinner" style="
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        grid-column: 1 / -1;
+    ">
+        <div style="
+            width: 48px;
+            height: 48px;
+            border: 5px solid #f0f0f0;
+            border-top: 5px solid #bc002d;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        "></div>
+    </div>
+    <!-- Add spinner animation to page -->
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+
+
+    <!-- Add new location platform -->
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add a New Destination 📍</h2>
+            <form id="add-location-form">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Location Name" required>
+                    <input type="text" id="city" placeholder="City (e.g. Tokyo)" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="category" placeholder="Category (e.g. Food, Shrine, Nature)" required>
+                    <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5">
+                    <input type="text" id="image_url" placeholder="Image URL (Optional)">
+                </div>
+                <textarea id="description" placeholder="Share your experience..." rows="4"></textarea>
+                <input type="url" id="map_url" placeholder="Google Maps Link">
+                <button type="submit" id="submit-btn">Save to Journey</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="details-modal" class="modal">
+        <div class="modal-content details-view">
+            <span class="close-details">&times;</span>
+            <div id="details-body"></div>
+        </div>
+    </div>
+
+    <section id="locations-grid">
+        <div id="locations-container" class="grid"></div>
+    </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
