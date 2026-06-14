@@ -13,6 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Start a new, clean stage
 FROM python:3.12-slim
 
+WORKDIR /app
+
 # Create a non-root user and group for security
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 

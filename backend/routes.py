@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, abort
-from backend.db_config import locations_collection
-from backend.models import validate_location_data, validate_partial_data
+from db_config import locations_collection
+from models import validate_location_data, validate_partial_data
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from pymongo.errors import PyMongoError

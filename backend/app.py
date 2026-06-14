@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-from backend.routes import locations_bp
-from backend.error_handlers import register_error_handlers
+from routes import locations_bp
+from error_handlers import register_error_handlers
 import os
 import requests
 
