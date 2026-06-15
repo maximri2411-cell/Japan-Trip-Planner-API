@@ -13,6 +13,11 @@ jobs:
   test: # lint + unit tests, runs first
     name: Lint and test backend
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
 
     steps:
       - name: Checkout code
