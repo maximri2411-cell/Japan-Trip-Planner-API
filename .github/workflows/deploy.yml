@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1 # AWS region
-  ECR_REGISTRY: YOUR_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com # ECR registry URL
+  ECR_REGISTRY: 369113522748.dkr.ecr.us-east-1.amazonaws.com # ECR registry URL
 
 jobs:
   build-and-push: # Main CI job
