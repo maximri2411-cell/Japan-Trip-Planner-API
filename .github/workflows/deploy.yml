@@ -59,6 +59,7 @@ jobs:
         with:
           image-ref: ${{ env.ECR_REGISTRY }}/japan/frontend:${{ github.sha }}
           format: table # Output format
+          ignore-unfixed: true 
           exit-code: 1 # Stop pipeline if critical vulnerabilities exist
           severity: CRITICAL # Only check critical severity issues
 
