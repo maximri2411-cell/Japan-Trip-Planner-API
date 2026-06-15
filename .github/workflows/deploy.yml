@@ -10,9 +10,34 @@ env:
   ECR_REGISTRY: 369113522748.dkr.ecr.us-east-1.amazonaws.com # ECR registry URL
 
 jobs:
+  test: # lint + unit tests, runs first
+    name: Lint and test backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pytest flake8
+
+      - name: Lint with flake8
+        run: flake8 backend/ --max-line-length=120
+
+      - name: Run unit tests
+        run: pytest backend/
+# ----------------------------
   build-and-push: # Main CI job
     name: Build, scan, and push images # Job display name
     runs-on: ubuntu-latest # GitHub hosted runner (Linux VM)
+    needs: test # Only runs if test job succeeds
 
     steps:
       - name: Checkout code # Pull repository code into runner
