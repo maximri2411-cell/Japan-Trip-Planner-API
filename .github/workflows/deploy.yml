@@ -1,0 +1,68 @@
+name: Build, Scan, and Push # Workflow name (display only)
+
+on:
+  push:
+    branches:
+      - main # Run only when pushing to main branch
+
+env:
+  AWS_REGION: us-east-1 # AWS region
+  ECR_REGISTRY: YOUR_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com # ECR registry URL
+
+jobs:
+  build-and-push: # Main CI job
+    name: Build, scan, and push images # Job display name
+    runs-on: ubuntu-latest # GitHub hosted runner (Linux VM)
+
+    steps:
+      - name: Checkout code # Pull repository code into runner
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials # Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # AWS access key
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # AWS secret key
+          aws-region: ${{ env.AWS_REGION }} # AWS region
+
+      - name: Login to Amazon ECR # Authenticate Docker with ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build backend image # Build backend Docker image
+        run: |
+          docker build -t $ECR_REGISTRY/japan/backend:${{ github.sha }} ./backend # Build image with commit SHA tag
+          docker tag $ECR_REGISTRY/japan/backend:${{ github.sha }} \
+                $ECR_REGISTRY/japan/backend:latest # Add "latest" tag for convenience
+
+      - name: Scan backend image with Trivy # Security scan for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.ECR_REGISTRY }}/japan/backend:${{ github.sha }}
+          format: table # Output format
+          exit-code: 1 # Fail pipeline if critical vulnerabilities are found
+          severity: CRITICAL # Only fail on critical issues
+
+      - name: Push backend image to ECR # Push backend image to AWS ECR
+        run: |
+          docker push $ECR_REGISTRY/japan/backend:${{ github.sha }} # Push versioned image
+          docker push $ECR_REGISTRY/japan/backend:latest # Push latest tag
+
+      - name: Build frontend image # Build frontend Docker image
+        run: |
+          docker build -t $ECR_REGISTRY/japan/frontend:${{ github.sha }} ./frontend # Build frontend image with SHA tag
+          docker tag $ECR_REGISTRY/japan/frontend:${{ github.sha }} \
+                $ECR_REGISTRY/japan/frontend:latest # Add latest tag
+
+      - name: Scan frontend image with Trivy # Security scan for frontend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.ECR_REGISTRY }}/japan/frontend:${{ github.sha }}
+          format: table # Output format
+          exit-code: 1 # Stop pipeline if critical vulnerabilities exist
+          severity: CRITICAL # Only check critical severity issues
+
+      - name: Push frontend image to ECR # Push frontend image to AWS ECR
+        run: |
+          docker push $ECR_REGISTRY/japan/frontend:${{ github.sha }} # Push versioned image
+          docker push $ECR_REGISTRY/japan/frontend:latest # Push latest tag
