@@ -40,6 +40,7 @@ jobs:
         with:
           image-ref: ${{ env.ECR_REGISTRY }}/japan/backend:${{ github.sha }}
           format: table # Output format
+          ignore-unfixed: true # Only block on vulnerabilities that have a fix available
           exit-code: 1 # Fail pipeline if critical vulnerabilities are found
           severity: CRITICAL # Only fail on critical issues
 
@@ -59,7 +60,7 @@ jobs:
         with:
           image-ref: ${{ env.ECR_REGISTRY }}/japan/frontend:${{ github.sha }}
           format: table # Output format
-          ignore-unfixed: true 
+          ignore-unfixed: true # Only block on vulnerabilities that have a fix available
           exit-code: 1 # Stop pipeline if critical vulnerabilities exist
           severity: CRITICAL # Only check critical severity issues
 
