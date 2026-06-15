@@ -6,8 +6,8 @@ import os
 os.environ["TESTING"] = "true"
 os.environ.setdefault("TEST_MONGO_DB_NAME", "japan_trip_test")
 
-from backend.app import app
-from backend.db_config import locations_collection
+from app import app
+from db_config import locations_collection
 
 #This thing help us to "active" the server without even touch him
 @pytest.fixture

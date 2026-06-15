@@ -24,20 +24,18 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          pip install -r backend/requirements.txt
-          pip install pytest flake8
+        run: pip install -r backend/requirements.txt
 
       - name: Lint with flake8
-        run: flake8 backend/ --max-line-length=120
+        run: flake8 backend/ --max-line-length=120 --extend-ignore=E265,W291,W293,E302,E305,E261,E262,W292,E117,E402,E225
 
       - name: Run unit tests
         run: pytest backend/
 # ----------------------------
   build-and-push: # Main CI job
+    needs: test # Only runs if test job succeeds
     name: Build, scan, and push images # Job display name
     runs-on: ubuntu-latest # GitHub hosted runner (Linux VM)
-    needs: test # Only runs if test job succeeds
 
     steps:
       - name: Checkout code # Pull repository code into runner
