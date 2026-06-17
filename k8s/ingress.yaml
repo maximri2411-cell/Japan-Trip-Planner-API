@@ -4,8 +4,9 @@ metadata:
   name: main-ingress               # Name of this Ingress resource
   namespace: devops-project        # Must be in the same namespace as the services it routes to
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /  # Strips the path prefix before forwarding
-                                                   # /api/users becomes /users when it hits the backend
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  # Captures everything after /api and forwards it
+                                                     # /api/health becomes /health when it hits the backend
+    nginx.ingress.kubernetes.io/use-regex: "true"    # Required to enable regex in path rules
 
 spec:
   ingressClassName: nginx          # Which Ingress Controller handles this (nginx in our case)
@@ -21,8 +22,8 @@ spec:
                 port:
                   number: 80            # On port 80
 
-          - path: /api             # Any request starting with /api
-            pathType: Prefix
+          - path: /api(/|$)(.*)    # Captures everything after /api
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: backend-service  # Forward to the backend service
