@@ -4,46 +4,46 @@ metadata:
   name: backend
   namespace: devops-project
 spec:
-  replicas: 2
+  replicas: 2                        # Initial pod count — HPA takes over after startup
   selector:
     matchLabels:
-      app: backend
+      app: backend                   # This Deployment owns pods with this label
   template:
     metadata:
       labels:
-        app: backend
+        app: backend                 # Label stamped on every pod created
     spec:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+        runAsNonRoot: true           # Kubernetes blocks pod if it tries to run as root
+        runAsUser: 1000              # Forces container to run as user ID 1000 (appuser)
       containers:
         - name: backend
           image: japan-backend:latest
-          imagePullPolicy: Never
+          imagePullPolicy: Never     # Use local image only — remove this for EKS
           ports:
-            - containerPort: 5000
+            - containerPort: 5000   # Flask listens on 5000
           env:
-            - name: MONGO_URI
+            - name: MONGO_URI        # Environment variable injected into the container
               valueFrom:
                 secretKeyRef:
-                  name: backend-secrets
-                  key: mongo-uri
+                  name: backend-secrets  # Name of the Kubernetes Secret object
+                  key: mongo-uri         # Key inside that Secret — never hardcoded in YAML
           resources:
             requests:
-              cpu: "100m"
-              memory: "128Mi"
+              cpu: "100m"            # Guaranteed CPU
+              memory: "128Mi"        # Guaranteed memory
             limits:
-              cpu: "250m"
-              memory: "256Mi"
-          livenessProbe:
+              cpu: "250m"            # Maximum CPU — exceed this and pod gets throttled
+              memory: "256Mi"        # Maximum memory — exceed this and pod gets killed
+          livenessProbe:             # Is the pod alive?
+            httpGet:
+              path: /health          # Flask /health endpoint
+              port: 5000
+            initialDelaySeconds: 10  # Wait 10s before first check — Flask needs time to start
+            periodSeconds: 15        # Check every 15s — fail 3 times → restart pod
+          readinessProbe:            # Is the pod ready to receive traffic?
             httpGet:
               path: /health
               port: 5000
-            initialDelaySeconds: 10
-            periodSeconds: 15
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            initialDelaySeconds: 5   # Wait 5s before first check
+            periodSeconds: 10        # Check every 10s — not ready → no traffic sent

@@ -1,40 +1,40 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1                  # API version for Deployment resources
+kind: Deployment                     # Resource type — manages pod creation and updates
 metadata:
-  name: frontend
-  namespace: devops-project
+  name: frontend                     # Name of this Deployment
+  namespace: devops-project          # Must match the namespace of all other resources
 spec:
-  replicas: 2
+  replicas: 2                        # Initial number of pods — HPA takes over after startup
   selector:
     matchLabels:
-      app: frontend
-  template:
+      app: frontend                  # This Deployment owns any pod with this label
+  template:                          # Blueprint for every pod this Deployment creates
     metadata:
       labels:
-        app: frontend
+        app: frontend                # Label stamped on every pod — must match selector above
     spec:
       containers:
-        - name: frontend
-          image: japan-frontend:latest
-          imagePullPolicy: Never
+        - name: frontend             # Container name inside the pod
+          image: japan-frontend:latest  # Docker image to run
+          imagePullPolicy: Never     # Use local image only — minikube only, remove for EKS
           ports:
-            - containerPort: 80
+            - containerPort: 80      # Port the container listens on
           resources:
             requests:
-              cpu: "50m"
-              memory: "64Mi"
+              cpu: "50m"             # Guaranteed CPU (50 millicores = 0.05 of a core)
+              memory: "64Mi"         # Guaranteed memory — HPA uses this for calculations
             limits:
-              cpu: "100m"
-              memory: "128Mi"
-          livenessProbe:
+              cpu: "100m"            # Maximum CPU allowed — exceed this and pod gets throttled
+              memory: "128Mi"        # Maximum memory allowed — exceed this and pod gets killed
+          livenessProbe:             # Is the pod alive?
+            httpGet:
+              path: /                # Hits this endpoint to check
+              port: 80
+            initialDelaySeconds: 5   # Wait 5s after startup before first check
+            periodSeconds: 15        # Check every 15s — fail 3 times in a row → restart pod
+          readinessProbe:            # Is the pod ready to receive traffic?
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 15
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 3
-            periodSeconds: 10
+            initialDelaySeconds: 3   # Wait 3s after startup before first check
+            periodSeconds: 10        # Check every 10s — not ready → no traffic sent to this pod

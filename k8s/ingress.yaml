@@ -1,27 +1,30 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: networking.k8s.io/v1  # API group for networking resources in Kubernetes
+kind: Ingress                      # Resource type — the external gateway into the cluster
 metadata:
-  name: main-ingress
-  namespace: devops-project
+  name: main-ingress               # Name of this Ingress resource
+  namespace: devops-project        # Must be in the same namespace as the services it routes to
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /  # Strips the path prefix before forwarding
+                                                   # /api/users becomes /users when it hits the backend
+
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx          # Which Ingress Controller handles this (nginx in our case)
   rules:
-    - host: devops-project.local
+    - host: devops-project.local   # The domain this Ingress listens on
       http:
         paths:
-          - path: /
+          - path: /                # Any request starting with /
+            pathType: Prefix       # Prefix = matches anything starting with this, not just exact /
+            backend:
+              service:
+                name: frontend-service  # Forward to the frontend service
+                port:
+                  number: 80            # On port 80
+
+          - path: /api             # Any request starting with /api
             pathType: Prefix
             backend:
               service:
-                name: frontend-service
+                name: backend-service  # Forward to the backend service
                 port:
-                  number: 80
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
-                port:
-                  number: 80
+                  number: 80           # On port 80

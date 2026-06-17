@@ -5,9 +5,9 @@ metadata:
   namespace: devops-project
 spec:
   selector:
-    app: backend
+    app: backend # Belongs to the backend
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: ClusterIP
+      port: 80 # The Port he listening
+      targetPort: 5000 # The port he forwarding
+  type: ClusterIP # The Type of Service we will have
