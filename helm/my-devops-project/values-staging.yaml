@@ -1,0 +1,6 @@
+backend:
+  replicaCount: 1
+frontend:
+  replicaCount: 1
+ingress:
+  host: staging.devops-project.local

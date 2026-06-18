@@ -1,0 +1,6 @@
+backend:
+  replicaCount: 2
+frontend:
+  replicaCount: 2
+ingress:
+  host: devops-project.local
