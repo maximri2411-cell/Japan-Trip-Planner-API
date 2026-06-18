@@ -1,64 +1,49 @@
-apiVersion: apps/v1                  # Kubernetes API version for Deployments
-kind: Deployment                     # Resource type
-
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: backend                      # Deployment name
-  namespace: {{ .Values.namespace }} # Namespace taken from values.yaml
-
+  name: backend
+  namespace: devops-project
 spec:
-  replicas: {{ .Values.backend.replicaCount }}  # Number of backend pods
-
+  replicas: 2
   selector:
     matchLabels:
-      app: backend                   # Select pods with label app=backend
-
+      app: backend
   template:
     metadata:
       labels:
-        app: backend                 # Label applied to created pods
-
+        app: backend
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name }} # ServiceAccount from values.yaml
-
       securityContext:
-        runAsNonRoot: true           # Prevent running container as root
-        runAsUser: 1000              # Run container with user ID 1000
-
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
-        - name: backend              # Container name
-
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
-          # Docker image repository + tag from values.yaml
-
-          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
-          # Pull policy from values.yaml, defaults to IfNotPresent
-
+        - name: backend
+          image: my-devops-project-backend:latest
+          imagePullPolicy: Never
           ports:
-            - containerPort: 5000    # Application listens on port 5000
-
+            - containerPort: 5000
           env:
-            - name: MONGO_URI        # Environment variable available inside container
+            - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: backend-secrets  # Kubernetes Secret name
-                  key: mongo-uri         # Secret key to read
-
+                  name: backend-secrets
+                  key: mongo-uri
           resources:
-            {{- toYaml .Values.backend.resources | nindent 12 }}
-            # Inject CPU and memory requests/limits from values.yaml
-
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
           livenessProbe:
-            # Checks if container is alive
             httpGet:
               path: /health
               port: 5000
             initialDelaySeconds: 10
             periodSeconds: 15
-
           readinessProbe:
-            # Checks if container is ready to receive traffic
             httpGet:
               path: /health
               port: 5000
             initialDelaySeconds: 5
-            periodSeconds: 10   # Check every 10s — not ready → no traffic sent
+            periodSeconds: 10

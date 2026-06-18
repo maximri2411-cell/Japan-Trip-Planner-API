@@ -1,21 +1,19 @@
-apiVersion: autoscaling/v2          # API version for autoscaling resources
-kind: HorizontalPodAutoscaler       # Watches CPU/memory and scales pods horizontally
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
 metadata:
   name: backend-hpa
-  namespace: {{ .Values.namespace }}
+  namespace: devops-project
 spec:
-  scaleTargetRef:                   # Which resource to scale
+  scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: backend                   # Points to the backend Deployment specifically
-
-  minReplicas: {{ .Values.hpa.minReplicas }}                    # Never scale below 2 pods
-  maxReplicas: {{ .Values.hpa.maxReplicas }}                    # Never scale above 5 pods
-
+    name: backend
+  minReplicas: 2
+  maxReplicas: 5
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.hpa.targetCPUUtilization }}    # If average CPU across all pods exceeds 70%, add a pod
+          averageUtilization: 70

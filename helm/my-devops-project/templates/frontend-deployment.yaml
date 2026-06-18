@@ -16,7 +16,7 @@ spec:
       containers:
         - name: frontend             # Container name inside the pod
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"  # Docker image to run
-          imagePullPolicy: Never     # Use local image only — minikube only, remove for EKS
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy | default "IfNotPresent" }} # Use local image only — minikube only, remove for EKS
           ports:
             - containerPort: 80      # Port the container listens on
           resources:
