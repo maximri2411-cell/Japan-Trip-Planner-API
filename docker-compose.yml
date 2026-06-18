@@ -3,22 +3,22 @@ version: "3.9"
 services:
   backend:
     build:
-      context: ./backend
+      context: ./backend # Build an image from Dockerfile that inside backend folder
       dockerfile: Dockerfile
     container_name: backend
     ports:
-      - "5001:5000"
+      - "5001:5000" # Inside the 5000 on my Host, points to port 5001 of the container
     environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017/appdb
-    restart: unless-stopped
+      - MONGO_URI=mongodb://host.docker.internal:27017/appdb # Env the app reads in db_config.py
+    restart: unless-stopped # "If the container falls, restart it again"
 
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend # Same as i said in backend
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "8080:80"
+      - "8080:80" # Host port 80 points to port 8080 of the container 
     depends_on:
-      - backend
-    restart: unless-stopped
+      - backend # Its goin to start the fronted only after he backend is on
+    restart: unless-stopped 
