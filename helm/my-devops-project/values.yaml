@@ -2,10 +2,10 @@
 backend:
   image:
     repository: japan-backend  # Docker image name (repo in registry like DockerHub/ECR)
-    tag: latest                             # Image version (avoid "latest" in production; use versioned tags like 1.0.0)
-  replicaCount: 2                           # Number of backend pods to run
+    tag: latest                # Image version (avoid "latest" in production; use versioned tags like 1.0.0)
+  replicaCount: 2              # Number of backend pods to run
   resources:
-    requests:                               # Minimum guaranteed resources per pod
+    requests:                   # Minimum guaranteed resources per pod
       cpu: 100m                             # 0.1 CPU core reserved
       memory: 128Mi                        # Minimum memory guaranteed
     limits:                                 # Maximum allowed resources per pod

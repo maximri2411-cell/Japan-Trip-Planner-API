@@ -1,0 +1,64 @@
+apiVersion: apps/v1                  # Kubernetes API version for Deployments
+kind: Deployment                     # Resource type
+
+metadata:
+  name: backend                      # Deployment name
+  namespace: {{ .Values.namespace }} # Namespace taken from values.yaml
+
+spec:
+  replicas: {{ .Values.backend.replicaCount }}  # Number of backend pods
+
+  selector:
+    matchLabels:
+      app: backend                   # Select pods with label app=backend
+
+  template:
+    metadata:
+      labels:
+        app: backend                 # Label applied to created pods
+
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }} # ServiceAccount from values.yaml
+
+      securityContext:
+        runAsNonRoot: true           # Prevent running container as root
+        runAsUser: 1000              # Run container with user ID 1000
+
+      containers:
+        - name: backend              # Container name
+
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          # Docker image repository + tag from values.yaml
+
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
+          # Pull policy from values.yaml, defaults to IfNotPresent
+
+          ports:
+            - containerPort: 5000    # Application listens on port 5000
+
+          env:
+            - name: MONGO_URI        # Environment variable available inside container
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets  # Kubernetes Secret name
+                  key: mongo-uri         # Secret key to read
+
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+            # Inject CPU and memory requests/limits from values.yaml
+
+          livenessProbe:
+            # Checks if container is alive
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+
+          readinessProbe:
+            # Checks if container is ready to receive traffic
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
