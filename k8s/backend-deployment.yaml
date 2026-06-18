@@ -1,49 +1,64 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1                  # Kubernetes API version for Deployments
+kind: Deployment                     # Resource type
+
 metadata:
-  name: backend
-  namespace: devops-project
+  name: backend                      # Deployment name
+  namespace: {{ .Values.namespace }} # Namespace taken from values.yaml
+
 spec:
-  replicas: 2                        # Initial pod count — HPA takes over after startup
+  replicas: {{ .Values.backend.replicaCount }}  # Number of backend pods
+
   selector:
     matchLabels:
-      app: backend                   # This Deployment owns pods with this label
+      app: backend                   # Select pods with label app=backend
+
   template:
     metadata:
       labels:
-        app: backend                 # Label stamped on every pod created
+        app: backend                 # Label applied to created pods
+
     spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }} # ServiceAccount from values.yaml
+
       securityContext:
-        runAsNonRoot: true           # Kubernetes blocks pod if it tries to run as root
-        runAsUser: 1000              # Forces container to run as user ID 1000 (appuser)
+        runAsNonRoot: true           # Prevent running container as root
+        runAsUser: 1000              # Run container with user ID 1000
+
       containers:
-        - name: backend
-          image: japan-backend:latest
-          imagePullPolicy: Never     # Use local image only — remove this for EKS
+        - name: backend              # Container name
+
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          # Docker image repository + tag from values.yaml
+
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
+          # Pull policy from values.yaml, defaults to IfNotPresent
+
           ports:
-            - containerPort: 5000   # Flask listens on 5000
+            - containerPort: 5000    # Application listens on port 5000
+
           env:
-            - name: MONGO_URI        # Environment variable injected into the container
+            - name: MONGO_URI        # Environment variable available inside container
               valueFrom:
                 secretKeyRef:
-                  name: backend-secrets  # Name of the Kubernetes Secret object
-                  key: mongo-uri         # Key inside that Secret — never hardcoded in YAML
+                  name: backend-secrets  # Kubernetes Secret name
+                  key: mongo-uri         # Secret key to read
+
           resources:
-            requests:
-              cpu: "100m"            # Guaranteed CPU
-              memory: "128Mi"        # Guaranteed memory
-            limits:
-              cpu: "250m"            # Maximum CPU — exceed this and pod gets throttled
-              memory: "256Mi"        # Maximum memory — exceed this and pod gets killed
-          livenessProbe:             # Is the pod alive?
-            httpGet:
-              path: /health          # Flask /health endpoint
-              port: 5000
-            initialDelaySeconds: 10  # Wait 10s before first check — Flask needs time to start
-            periodSeconds: 15        # Check every 15s — fail 3 times → restart pod
-          readinessProbe:            # Is the pod ready to receive traffic?
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+            # Inject CPU and memory requests/limits from values.yaml
+
+          livenessProbe:
+            # Checks if container is alive
             httpGet:
               path: /health
               port: 5000
-            initialDelaySeconds: 5   # Wait 5s before first check
-            periodSeconds: 10        # Check every 10s — not ready → no traffic sent
+            initialDelaySeconds: 10
+            periodSeconds: 15
+
+          readinessProbe:
+            # Checks if container is ready to receive traffic
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10   # Check every 10s — not ready → no traffic sent

@@ -61,4 +61,4 @@ spec:
               path: /health
               port: 5000
             initialDelaySeconds: 5
-            periodSeconds: 10
+            periodSeconds: 10   # Check every 10s — not ready → no traffic sent
