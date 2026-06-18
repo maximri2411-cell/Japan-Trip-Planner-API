@@ -1,0 +1,40 @@
+
+backend:
+  image:
+    repository: japan-backend  # Docker image name (repo in registry like DockerHub/ECR)
+    tag: latest                             # Image version (avoid "latest" in production; use versioned tags like 1.0.0)
+  replicaCount: 2                           # Number of backend pods to run
+  resources:
+    requests:                               # Minimum guaranteed resources per pod
+      cpu: 100m                             # 0.1 CPU core reserved
+      memory: 128Mi                        # Minimum memory guaranteed
+    limits:                                 # Maximum allowed resources per pod
+      cpu: 250m
+      memory: 256Mi
+
+frontend:
+  image:
+    repository: japan-frontend # Frontend Docker image repository
+    tag: latest                            # Image version
+  replicaCount: 2                          # Number of frontend replicas
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+namespace: devops-project                  # Kubernetes namespace where resources will be deployed
+
+ingress:
+  host: devops-project.local               # Domain used to access the application (via Ingress)
+
+hpa:
+  minReplicas: 2                           # Minimum number of pods in autoscaling
+  maxReplicas: 5                           # Maximum number of pods
+  targetCPUUtilization: 70                 # Scale up/down based on CPU %
+
+serviceAccount:
+  name: backend-sa                         # Kubernetes ServiceAccount name used by backend pods
+  roleArn: ""                             # AWS IAM Role ARN (IRSA) for permissions (S3, DynamoDB, etc.)
