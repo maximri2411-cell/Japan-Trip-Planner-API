@@ -1,6 +1,23 @@
 backend:
+  image:
+    repository: 369113522748.dkr.ecr.us-east-1.amazonaws.com/japan/backend
+    tag: latest
+    pullPolicy: IfNotPresent
   replicaCount: 2
+
 frontend:
+  image:
+    repository: 369113522748.dkr.ecr.us-east-1.amazonaws.com/japan/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
   replicaCount: 2
+
 ingress:
-  host: devops-project.local
+  host: devops-project.local  # or your real domain if you have one
+
+aws:
+  region: us-east-1
+
+serviceAccount:
+  name: backend-sa
+  roleArn: "arn:aws:iam::369113522748:role/my-devops-project-backend-irsa"

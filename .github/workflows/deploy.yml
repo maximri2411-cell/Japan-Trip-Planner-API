@@ -96,3 +96,43 @@ jobs:
         run: |
           docker push $ECR_REGISTRY/japan/frontend:${{ github.sha }} # Push versioned image
           docker push $ECR_REGISTRY/japan/frontend:latest # Push latest tag
+
+# -------------------------------
+
+  deploy:
+    name: Deploy to EKS via Helm
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name my-devops-project-cluster --region us-east-1
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install my-devops-project ./helm/my-devops-project \
+            -n devops-project --create-namespace \
+            -f helm/my-devops-project/values.yaml \
+            -f helm/my-devops-project/values-prod.yaml \
+            --set backend.image.tag=${{ github.sha }} \
+            --set frontend.image.tag=${{ github.sha }}
+
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/backend -n devops-project
+          kubectl rollout status deployment/frontend -n devops-project
