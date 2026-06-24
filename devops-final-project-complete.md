@@ -1,5 +1,5 @@
-# DevOps Final Project — Full Lab Guide (v2)
-### Flask · MongoDB · Docker · GitHub Actions · Kubernetes · Helm · Terraform · AWS EKS · Security
+# DevOps Final Project — Full Lab Guide
+### Flask · MongoDB · Docker · GitHub Actions · Kubernetes · Helm · Terraform · AWS EKS · Monitoring · Security
 
 > **How to use this guide**
 > Work through stages in order. Never skip the homework section at the start of each stage. At the end of every stage, run the full checklist before moving on. If even one item fails, fix it before continuing.
@@ -19,6 +19,7 @@ A production-grade microservices platform on AWS EKS:
 - **Helm** — your K8s manifests as a templated chart with per-environment values
 - **Infrastructure** — Terraform provisions everything: VPC, EKS, IAM (including IRSA)
 - **Secrets** — AWS Secrets Manager + External Secrets Operator, zero hardcoded credentials
+- **Monitoring** — Prometheus + Grafana via kube-prometheus-stack, live crash and scaling demos
 - **Security validation** — a final pass proving every security control actually works
 
 **Cost:** Stages 1–5 are completely free. AWS costs only begin in Stage 6 when you run `terraform apply`.
@@ -1739,62 +1740,231 @@ Open the load balancer URL — your app, live on real AWS, with secrets pulled f
 
 ---
 
-## Step 11 — Security validation pass (do this before recording your demo)
+## Stage 6 checklist
 
-Run through each of these and note the result — these become screenshots and DECISIONS.md content:
+- [ ] `terraform apply` completed with no errors
+- [ ] `kubectl get nodes` shows 2 real EC2 nodes `Ready`
+- [ ] ExternalSecret shows `SecretSynced`
+- [ ] GitHub Actions pipeline completes green, including manual approval gate
+- [ ] App accessible via load balancer URL
+
+> The demo recording, security validation, and cluster teardown all happen in Stage 7 — after monitoring is installed.
+
+---
+
+---
+
+# Stage 7 — Monitoring, Live Demo & Destroy
+
+> Pick this up immediately after Stage 6 is complete — your app is live on EKS, Helm is deployed, IRSA and External Secrets are working.
+
+---
+
+## Homework before you start
+
+**What is Prometheus?**
+A tool that runs inside your cluster and scrapes metrics from every pod every few seconds — CPU, memory, request count, error rate. It stores everything as time-series data.
+
+**What is Grafana?**
+A visualization layer that connects to Prometheus and turns raw numbers into live graphs and dashboards. You open it in a browser and see your entire cluster health at a glance.
+
+**What is kube-prometheus-stack?**
+A single Helm chart that installs Prometheus + Grafana + pre-built Kubernetes dashboards all wired together. One command, everything works. This is what you will install.
+
+Take 20 minutes reading about these before continuing.
+
+---
+
+## Step 1 — Install the monitoring stack
 
 ```bash
-# 1. Confirm the IRSA trust policy only allows your specific ServiceAccount
-aws iam get-role --role-name my-devops-project-backend-irsa \
+# Add the community Helm repo
+helm repo add prometheus-community \
+  https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+# Install everything in one shot
+helm install monitoring \
+  prometheus-community/kube-prometheus-stack \
+  -n monitoring --create-namespace
+```
+
+Wait 1-2 minutes for pods to come up, then verify:
+
+```bash
+kubectl get pods -n monitoring
+```
+
+You should see pods for Prometheus, Grafana, and AlertManager all running.
+
+---
+
+## Step 2 — Access Grafana
+
+```bash
+kubectl port-forward -n monitoring \
+  svc/monitoring-grafana 3000:80
+```
+
+Open `http://localhost:3000` in your browser.
+
+Login:
+- Username: `admin`
+- Password: `prom-operator`
+
+You are now inside Grafana. Note in your `DECISIONS.md` that you would change this default password for anything beyond a lab environment.
+
+---
+
+## Step 3 — Find your dashboards
+
+In Grafana, go to **Dashboards → Browse**.
+
+The pre-built dashboards you care about:
+
+| Dashboard | What it shows |
+|---|---|
+| Kubernetes / Compute Resources / Namespace (Pods) | CPU and memory per pod in your namespace |
+| Kubernetes / Compute Resources / Cluster | Overall cluster health |
+| Kubernetes / Networking / Namespace (Pods) | Network traffic between pods |
+
+Filter the namespace dashboard to `devops-project`. You should see live CPU and memory graphs for your frontend and backend pods.
+
+**Take a screenshot of this now** — this is one of your key demo assets.
+
+---
+
+## Step 4 — Live crash demo (the best part of your demo video)
+
+This is the moment that sticks in an interviewer's memory. Do this while screen recording.
+
+**Open two terminal windows side by side.**
+
+Terminal 1 — watch pods in real time:
+```bash
+kubectl get pods -n devops-project -w
+```
+
+Terminal 2 — delete a backend pod:
+```bash
+kubectl delete pod -n devops-project -l app=backend
+```
+
+**What you will see:**
+- Terminal 1: one pod goes `Terminating`, a new pod appears `ContainerCreating`, then `Running` — within 15-20 seconds
+- Grafana: a brief dip in the CPU/memory graph for the backend, then recovery
+
+**Why this matters for the interview:**
+This proves self-healing. You are showing that Kubernetes detects the failure and recovers automatically — no human intervention needed. When you say "the system heals itself," this is the proof.
+
+---
+
+## Step 5 — HPA scaling demo
+
+This shows the autoscaler working. You will generate fake CPU load and watch Kubernetes add replicas.
+
+```bash
+# Open a shell inside a pod
+kubectl exec -it -n devops-project \
+  $(kubectl get pod -n devops-project -l app=backend -o jsonpath='{.items[0].metadata.name}') -- sh
+
+# Inside the pod — generate CPU load
+while true; do dd if=/dev/zero of=/dev/null; done
+```
+
+In another terminal, watch the HPA react:
+
+```bash
+kubectl get hpa -n devops-project -w
+```
+
+Within 1-2 minutes you should see the replica count climb from 2 toward 5.
+
+Kill the load (Ctrl+C inside the pod), and watch the replicas scale back down.
+
+**Take a screenshot of the HPA showing more than 2 replicas** — this is proof the autoscaler is working.
+
+---
+
+## Step 6 — Security validation pass
+
+Run through every check below and note the result. These become your demo screenshots and `DECISIONS.md` content. Do this before you record — if anything fails, now is the time to fix it.
+
+```bash
+# 1. IRSA — confirm the role trust policy is scoped to your specific ServiceAccount only
+aws iam get-role \
+  --role-name my-devops-project-backend-irsa \
   --query 'Role.AssumeRolePolicyDocument'
-# Look for: the condition restricts to system:serviceaccount:devops-project:backend-sa specifically
+# Look for: condition restricts to system:serviceaccount:devops-project:backend-sa
+# This proves least privilege — not "any pod", only this specific ServiceAccount
 
-# 2. Confirm the pod has no static AWS credentials
+# 2. No static AWS credentials in the pod
 kubectl exec -it -n devops-project deploy/backend -- env | grep -i aws
-# Should show AWS_ROLE_ARN and AWS_WEB_IDENTITY_TOKEN_FILE (IRSA injected), NOT access keys
+# Should show AWS_ROLE_ARN and AWS_WEB_IDENTITY_TOKEN_FILE (IRSA injected)
+# Should NOT show AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY
 
-# 3. Confirm NetworkPolicy still holds on real EKS
+# 3. NetworkPolicy still holds on real EKS
 kubectl run test-pod --image=busybox -n devops-project --rm -it -- sh
 wget -qO- http://backend-service:80
 exit
-# Should still time out
+# Should time out — NetworkPolicy blocks unlabelled pods
 
-# 4. Confirm non-root
+# 4. Non-root confirmed
 kubectl exec -it -n devops-project deploy/backend -- whoami
-# Should print a non-root user, not root
+# Should print a non-root username, not root
 
-# 5. Confirm the ExternalSecret synced correctly
+# 5. External Secrets synced correctly
 kubectl get externalsecret -n devops-project
-# STATUS should be SecretSynced
+# STATUS column should show: SecretSynced
 ```
 
-If any of these don't behave as expected, this is the moment to debug — not after you've recorded the demo and destroyed the cluster.
+**All 5 must pass before you record your demo.**
 
 ---
 
-## Step 12 — Record everything
+## Step 7 — Record the full demo video
 
-Screen recording showing:
-- GitHub Actions pipeline end to end, including the manual approval step
-- `kubectl get all -n devops-project`
-- The live app in the browser
-- `kubectl get hpa -n devops-project`
-- `kubectl get externalsecret -n devops-project` showing `SecretSynced`
-- The 5 security validation checks from Step 11
-- ECR console with commit-SHA-tagged images
-- EKS console showing the cluster
-- IAM console showing the IRSA role and its trust policy
+Screen record everything below in one continuous take if possible. This video is your permanent evidence — once you destroy the cluster, it is all you have.
+
+**What to show, in order:**
+
+1. GitHub Actions pipeline — show a recent run, click through each step (build, Trivy scan, push, manual approval, Helm deploy), confirm all green
+2. ECR console — show your images tagged with commit SHAs
+3. `kubectl get all -n devops-project` — everything running
+4. Live crash demo from Step 4 — pod deletion and recovery
+5. HPA scaling demo from Step 5 — replicas climbing under load
+6. Grafana dashboard — CPU/memory graphs, filter to `devops-project` namespace
+7. `kubectl get externalsecret -n devops-project` — showing `SecretSynced`
+8. The 5 security validation checks from Step 6
+9. EKS console in AWS — show the cluster, node group, worker nodes
+10. VPC console — show subnets (public vs private), NAT Gateway
+11. IAM console — show the IRSA role and its trust policy
+
+**Take screenshots of everything** — even if the video covers it. Screenshots load faster when you share them.
 
 ---
 
-## Step 13 — Destroy
+## Step 8 — terraform destroy
+
+The moment you have confirmed your recording is saved locally — destroy everything.
 
 ```bash
 cd terraform
 terraform destroy
 ```
 
-Type `yes`. Verify in console afterward: no EKS cluster, no NAT Gateway, nothing left running. Also delete the Secrets Manager secret if you don't need it:
+Type `yes`. Takes 10-15 minutes.
+
+After it finishes, verify manually in the AWS console that nothing is left running:
+
+- [ ] No EKS cluster
+- [ ] No EC2 instances (worker nodes)
+- [ ] No NAT Gateway (this one is expensive per hour)
+- [ ] No RDS instance (if you added one)
+- [ ] No load balancer
+
+Also clean up Secrets Manager:
 
 ```bash
 aws secretsmanager delete-secret \
@@ -1805,22 +1975,24 @@ aws secretsmanager delete-secret \
 
 ---
 
-## Stage 6 checklist
+## Stage 7 checklist
 
-- [ ] `terraform apply` completed with no errors
-- [ ] `kubectl get nodes` shows 2 real EC2 nodes `Ready`
-- [ ] ExternalSecret shows `SecretSynced`
-- [ ] All 5 security validation checks from Step 11 pass
-- [ ] GitHub Actions pipeline completes green, including manual approval gate
-- [ ] App accessible via load balancer URL
-- [ ] Screen recording saved
-- [ ] `terraform destroy` completes cleanly — verified in console
+- [ ] Prometheus + Grafana installed and pods running in `monitoring` namespace
+- [ ] Grafana dashboard shows live CPU/memory for your pods
+- [ ] Live crash demo recorded — pod deleted and recovered on camera
+- [ ] HPA scaling demo recorded — replicas climbed under load
+- [ ] All 5 security validation checks passed
+- [ ] Full demo video saved locally (confirm you can play it back)
+- [ ] Screenshots saved and organized by stage
+- [ ] `terraform destroy` completed cleanly
+- [ ] Verified in AWS console — no resources left running
+- [ ] Secrets Manager secret deleted
 
 ---
 
 ---
 
-# Stage 7 — Polish and documentation (free)
+# Stage 8 — Polish and documentation (free)
 
 ## Step 1 — DECISIONS.md
 
@@ -1836,8 +2008,10 @@ Write one paragraph per decision. Minimum list:
 - Why Helm over raw YAML — what templating buys you
 - Why IRSA over static AWS credentials in pods
 - Why External Secrets Operator instead of manually-created K8s Secrets
+- Why `kube-prometheus-stack` over installing Prometheus and Grafana separately, and what alerting rules you would add for a real production system
 - Why `cluster_endpoint_public_access = true` for this lab, and what you'd change for production
 - Why a manual approval gate before production deploy
+- Why Grafana default password is not acceptable for production
 
 ---
 
@@ -1845,7 +2019,7 @@ Write one paragraph per decision. Minimum list:
 
 Include:
 
-1. Architecture diagram (Stage 7 diagram below)
+1. Architecture diagram
 2. What the project does, 3 sentences
 3. Tech stack
 4. How to run locally (`docker compose up`)
@@ -1864,12 +2038,12 @@ Include:
 
 ---
 
-## Stage 7 checklist
+## Stage 8 checklist
 
-- [ ] DECISIONS.md covers at least 12 decisions
+- [ ] DECISIONS.md covers at least 14 decisions
 - [ ] README.md is clear enough for a stranger to run the project
 - [ ] No secrets or account IDs hardcoded anywhere
-- [ ] Demo video saved
+- [ ] Demo video saved and linked in README
 - [ ] Repo clean and ready to share
 - [ ] You can talk through every component for 10 minutes without notes
 
@@ -1879,7 +2053,7 @@ Include:
 
 # Final architecture — how it all locks together
 
-The diagram below shows the complete system as it exists at the end of Stage 6: GitHub Actions building and scanning images, ECR storing them, Terraform-provisioned VPC and EKS, Helm deploying the chart, IRSA connecting the backend pod's ServiceAccount to an IAM role, External Secrets pulling MongoDB credentials from Secrets Manager, and NetworkPolicy enforcing zero-trust between frontend and backend.
+The diagram below shows the complete system as it exists at the end of Stage 7: GitHub Actions building and scanning images, ECR storing them, Terraform-provisioned VPC and EKS, Helm deploying the chart, IRSA connecting the backend pod's ServiceAccount to an IAM role, External Secrets pulling MongoDB credentials from Secrets Manager, NetworkPolicy enforcing zero-trust between frontend and backend, and Prometheus + Grafana providing live observability of the entire cluster.
 
 ---
 
@@ -1896,6 +2070,11 @@ kubectl get externalsecret -n devops-project
 helm upgrade --install my-devops-project ./helm/my-devops-project -n devops-project -f values.yaml -f values-prod.yaml
 helm template my-devops-project ./helm/my-devops-project
 helm install --dry-run --debug ...
+
+# Monitoring
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+kubectl get pods -n monitoring
+kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
 
 # Terraform
 terraform init
@@ -1922,10 +2101,11 @@ aws iam get-role --role-name my-devops-project-backend-irsa
 | 4 — Helm | Free |
 | 5 — Terraform (write only) | Free |
 | 6 — AWS sprint (2-3 days) | ~$30-50 |
-| 7 — Polish | Free |
+| 7 — Monitoring, demo & destroy | Free (included in Stage 6 cluster time) |
+| 8 — Polish | Free |
 
 `terraform destroy` immediately after recording. Every hour the cluster runs costs money.
 
 ---
 
-*Good luck. This is a 9/10 junior project — if you can defend every piece of it.*
+*When you can talk through the whole thing for 10 minutes without notes — the project is done.*
