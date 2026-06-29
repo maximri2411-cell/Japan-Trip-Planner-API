@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1 # AWS region
-  ECR_REGISTRY: 369113522748.dkr.ecr.us-east-1.amazonaws.com # ECR registry URL
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }} # ECR registry URL
 
 jobs:
   test: # lint + unit tests, runs first
